@@ -1,0 +1,2 @@
+streamlit
+mysqul-connector-python
