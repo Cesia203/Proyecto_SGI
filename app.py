@@ -59,7 +59,34 @@ div.stRadio > div {
 # Comprobamos si la sesión ya está iniciada
 if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]:
     
-    opciones = ["Inicio", "Directiva", "Promotora", "Administrador"]
+    # =========================================================================
+    # PASO 1: LÓGICA DE ROLES
+    # IMPORTANTE: Asegúrate de que la función login() establezca st.session_state["user_role"]
+    # con el rol de la base de datos (Ej: "Presidente", "Admin", "Promotora").
+    # =========================================================================
+    
+    # --- TEMPORAL: Selector de Rol para Demostración (ELIMINAR EN PRODUCCIÓN) ---
+    roles_demo = ["Presidente", "Admin", "Promotora"]
+    st.session_state["user_role"] = st.sidebar.selectbox("Simular Rol (DEMO):", roles_demo, key="role_selector")
+    # --- FIN TEMPORAL ---
+
+    # Obtenemos el rol actual. Por defecto "Presidente" para evitar errores iniciales si no está seteado.
+    user_role = st.session_state.get("user_role", "Presidente")
+
+    # 2. Definimos las opciones disponibles según el rol
+    opciones_disponibles = ["Inicio"] # 'Inicio' siempre está disponible
+
+    if user_role == "Presidente":
+        opciones_disponibles.append("Directiva")
+    elif user_role == "Admin":
+        opciones_disponibles.append("Administrador")
+    elif user_role == "Promotora":
+        opciones_disponibles.append("Promotora")
+        
+    opciones = opciones_disponibles
+    
+    # -------------------------------------------------------------------------
+    
     iconos = {
         "Inicio": "🏠",       # Casa
         "Directiva": "📈",    # Gráfico de barras
@@ -67,7 +94,7 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
         "Administrador": "⚙️" # Engranaje
     }
     
-    # Preparamos las opciones para mostrar con el icono al lado
+    # Preparamos SOLO las opciones disponibles con su icono para mostrar
     opciones_display = [f"{iconos[op]} {op}" for op in opciones]
 
     # --- Código para centrar las opciones en un "marco" ---
@@ -75,8 +102,7 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
     col1, col2, col3 = st.columns([1, 4, 1])
 
     with col2:
-        # Usamos st.radio para que las opciones aparezcan centradas y la inyección CSS las estiliza como cuadros.
-        # El título "OPCIONES" ahora se centrará y estará en negrita gracias al CSS inyectado.
+        # Usamos st.radio con las opciones FILTRADAS
         seleccion_display = st.radio(
             "OPCIONES",
             opciones_display,
@@ -85,7 +111,6 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
         )
         
         # Obtenemos la selección real (sin el icono) para la lógica condicional
-        # Esto extrae la última palabra de la cadena (ej: "🏠 Inicio" -> "Inicio")
         seleccion = seleccion_display.split()[-1] 
     # --- Fin del código para centrar y enmarcar ---
 
@@ -95,22 +120,26 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
     if seleccion == "Directiva":
         st.header(f"{iconos['Directiva']} Sección Directiva")
         st.write("Panel de control y herramientas para la Directiva.")
+        st.write(f"Rol actual: **{user_role}**")
         pass # Bloque de código para Directiva
 
     elif seleccion == "Inicio":
         st.header(f"{iconos['Inicio']} Inicio del Sistema")
         st.write("Has seleccionado la página de inicio.")
+        st.write(f"Rol actual: **{user_role}**")
         # Llamamos a la función que muestra el contenido principal.
         mostrar_bienvenido()
         
     elif seleccion == "Promotora":
         st.header(f"{iconos['Promotora']} Sección Promotora")
         st.write("Contenido específico y herramientas para el rol de Promotora.")
+        st.write(f"Rol actual: **{user_role}**")
         pass
 
     elif seleccion == "Administrador":
         st.header(f"{iconos['Administrador']} Sección Administrador")
         st.write("Contenido de gestión y configuración para el Administrador.")
+        st.write(f"Rol actual: **{user_role}**")
         pass
 else:
     # Si la sesión no está iniciada o el estado es False,
