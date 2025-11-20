@@ -7,7 +7,7 @@ from modulos.login import login
 # Esta línea verifica si la clave "sesion_iniciada" existe en el estado de la sesión
 # Y también comprueba si su valor es True.
 if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]:
-    opciones = ["Ventas", "Otra opción"] # Agrega más opciones si las necesitas
+    opciones = ["Directiva", "Promotora","Administrador","Inicio"] # Agrega más opciones si las necesitas
 
     # --- Nuevo código para centrar las opciones ---
     # Creamos columnas: una estrecha a la izquierda, una ancha en el centro y otra estrecha a la derecha.
