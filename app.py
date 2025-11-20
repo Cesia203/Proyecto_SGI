@@ -8,14 +8,27 @@ from modulos.login import login
 # Y también comprueba si su valor es True.
 if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]:
     opciones = ["Ventas", "Otra opción"] # Agrega más opciones si las necesitas
-    seleccion = st.sidebar.selectbox("Selecciona una opción", opciones)
+
+    # --- Nuevo código para centrar las opciones ---
+    # Creamos columnas: una estrecha a la izquierda, una ancha en el centro y otra estrecha a la derecha.
+    col1, col2, col3 = st.columns([1, 2, 1])
+
+    with col2:
+        # Usamos st.radio para que las opciones aparezcan en el centro de la columna 2.
+        seleccion = st.radio("Selecciona una opción:", opciones, key="main_menu_selection")
+    # --- Fin del código para centrar ---
+
     # Según la opción seleccionada, mostramos el contenido correspondiente
     if seleccion == "Ventas":
+        st.header("Sección de Ventas (Contenido Principal)")
+        st.write("Aquí se mostrarán los datos y herramientas relacionados con las ventas.")
         pass # Bloque de código para Ventas (anteriormente vacío)
 
     elif seleccion == "Otra opción":
-        st.write("Has seleccionado otra opción.") # Aquí podrías agregar el contenido de
-        # otras opciones
+        st.header("Otra Opción Seleccionada")
+        st.write("Has seleccionado otra opción.")
+        # Aquí podrías agregar el contenido de otras opciones
+
         # Si la sesión está iniciada (el usuario ha iniciado sesión),
         # llamamos a la función que muestra el contenido principal o de ventas.
         mostrar_bienvenido()
