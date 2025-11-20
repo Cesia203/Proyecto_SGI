@@ -1,7 +1,7 @@
 import streamlit as st
 from modulos.bienvenido import mostrar_bienvenido # Importamos la función mostrar_bienvenido del módulo bienvenido
 from modulos.login import login
-
+mostrar_bienvenido()
 # Comprobamos si la sesión ya está iniciada
 # Esta línea verifica si la clave "sesion_iniciada" existe en el estado de la sesión
 # Y también comprueba si su valor es True.
