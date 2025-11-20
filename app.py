@@ -1,4 +1,4 @@
-iimport streamlit as st
+import streamlit as st
 from modulos.bienvenido import mostrar_bienvenido # Importamos la función mostrar_bienvenido del módulo bienvenido
 
 from modulos.login import login
