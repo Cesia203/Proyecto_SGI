@@ -60,22 +60,24 @@ div.stRadio > div {
 if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]:
     
     # =========================================================================
-    # PASO 1: LÓGICA DE ROLES
-    # IMPORTANTE: Asegúrate de que la función login() establezca st.session_state["user_role"]
+    # PASO 1: LÓGICA DE ROLES MEJORADA
+    # Asegúrate de que la función login() establezca st.session_state["user_role"]
     # con el rol de la base de datos (Ej: "Presidente", "Admin", "Promotora").
     # =========================================================================
     
     # --- TEMPORAL: Selector de Rol para Demostración (ELIMINAR EN PRODUCCIÓN) ---
-    roles_demo = ["Presidente", "Admin", "Promotora"]
-    st.session_state["user_role"] = st.sidebar.selectbox("Simular Rol (DEMO):", roles_demo, key="role_selector")
+    # Usamos los roles exactos de tu base de datos (Presidente, Admin, Promotora)
+    roles_db = ["Presidente", "Admin", "Promotora"]
+    st.session_state["user_role"] = st.sidebar.selectbox("Simular Rol (DEMO):", roles_db, key="role_selector")
     # --- FIN TEMPORAL ---
 
-    # Obtenemos el rol actual. Por defecto "Presidente" para evitar errores iniciales si no está seteado.
-    user_role = st.session_state.get("user_role", "Presidente")
+    # Obtenemos el rol actual.
+    user_role = st.session_state.get("user_role", None)
 
     # 2. Definimos las opciones disponibles según el rol
     opciones_disponibles = ["Inicio"] # 'Inicio' siempre está disponible
 
+    # Mapeo de Roles de DB a Opciones de Menú
     if user_role == "Presidente":
         opciones_disponibles.append("Directiva")
     elif user_role == "Admin":
@@ -97,15 +99,20 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
     # Preparamos SOLO las opciones disponibles con su icono para mostrar
     opciones_display = [f"{iconos[op]} {op}" for op in opciones]
 
+    # Determinamos qué opción debe estar seleccionada por defecto (Generalmente, la primera de la lista, que es 'Inicio')
+    default_selection_display = opciones_display[0] if opciones_display else "Inicio"
+
+
     # --- Código para centrar las opciones en un "marco" ---
-    # Creamos columnas: una estrecha a la izquierda, una ancha en el centro (para el menú), y otra estrecha a la derecha.
     col1, col2, col3 = st.columns([1, 4, 1])
 
     with col2:
-        # Usamos st.radio con las opciones FILTRADAS
+        # Usamos st.radio con las opciones FILTRADAS y establecemos el índice para evitar errores si el rol cambia
         seleccion_display = st.radio(
             "OPCIONES",
             opciones_display,
+            # El valor por defecto se establece para prevenir errores de indexación al filtrar
+            index=opciones_display.index(default_selection_display) if default_selection_display in opciones_display else 0,
             key="main_menu_selection",
             horizontal=True
         )
