@@ -11,6 +11,15 @@ st.set_page_config(layout="centered")
 # y resalta la opción seleccionada.
 st.markdown("""
 <style>
+/* Centrar el texto del label/título del st.radio (la palabra "OPCIONES") */
+div.stRadio > p {
+    text-align: center;
+    font-size: 1.5em; /* Tamaño de fuente más grande para el título */
+    color: #0077b6; /* Color azul para destacar el título */
+    font-weight: 900; /* AHORA EN NEGRITA MÁS GRUESA */
+    margin-bottom: 15px;
+}
+
 /* Estilo para el contenedor general del radio button, asegurando el centrado */
 div.stRadio > label {
     padding: 10px 15px;
@@ -67,6 +76,7 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
 
     with col2:
         # Usamos st.radio para que las opciones aparezcan centradas y la inyección CSS las estiliza como cuadros.
+        # El título "OPCIONES" ahora se centrará y estará en negrita gracias al CSS inyectado.
         seleccion_display = st.radio(
             "OPCIONES",
             opciones_display,
