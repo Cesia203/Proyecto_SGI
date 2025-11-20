@@ -24,7 +24,7 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
         st.write("Aquí se mostrarán los datos y herramientas relacionados con las ventas.")
         pass # Bloque de código para Ventas (anteriormente vacío)
 
-    elif seleccion == "Otra opción":
+    elif seleccion == "Inicio":
         st.header("Otra Opción Seleccionada")
         st.write("Has seleccionado otra opción.")
         # Aquí podrías agregar el contenido de otras opciones
