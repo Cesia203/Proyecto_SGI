@@ -1,4 +1,4 @@
-import streamlit as st
+#import streamlit as st
 from modulos.bienvenido import mostrar_bienvenido # Importamos la función mostrar_bienvenido del módulo bienvenido
 
 from modulos.login import login
@@ -14,7 +14,7 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
     col1, col2, col3 = st.columns([1, 2, 1])
 
     with col2:
-        # Usamos st.radio para que las opciones aparezcan en el centro de la columna 2.
+        #Usamos st.radio para que las opciones aparezcan en el centro de la columna 2.
         seleccion = st.radio("Selecciona una opción:", opciones, key="main_menu_selection")
     # --- Fin del código para centrar ---
 
@@ -25,8 +25,9 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
         pass # Bloque de código para Ventas (anteriormente vacío)
 
     elif seleccion == "Inicio":
-        st.header("Otra Opción Seleccionada")
-        st.write("Has seleccionado otra opción.")
+        
+        #st.header("Otra Opción Seleccionada")
+        #st.write("Has seleccionado otra opción.")
         # Aquí podrías agregar el contenido de otras opciones
 
         # Si la sesión está iniciada (el usuario ha iniciado sesión),
