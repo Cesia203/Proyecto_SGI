@@ -1,5 +1,7 @@
+
 import streamlit as st
 from modulos.bienvenido import mostrar_bienvenido # Importamos la función mostrar_bienvenido del módulo bienvenido
+mostrar_bienvenido()
 from modulos.login import login
 
 # Comprobamos si la sesión ya está iniciada
