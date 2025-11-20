@@ -6,50 +6,100 @@ from modulos.login import login
 # Configuración básica de la página (opcional, pero útil para centrar)
 st.set_page_config(layout="centered")
 
+# --- Bloque de Inyección CSS para Enmarcar y Estilizar las Opciones ---
+# Este código inyecta CSS para que los botones de radio se vean como cajas separadas
+# y resalta la opción seleccionada.
+st.markdown("""
+<style>
+/* Estilo para el contenedor general del radio button, asegurando el centrado */
+div.stRadio > label {
+    padding: 10px 15px;
+    margin: 5px;
+    border-radius: 10px;
+    border: 2px solid #ddd;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    font-weight: bold;
+    cursor: pointer;
+    flex-grow: 1; /* Asegura que las cajas se distribuyan uniformemente */
+}
+
+/* Estilo cuando una opción de radio está activa/seleccionada */
+div.stRadio > label[data-testid*="stDecoration"] {
+    background-color: #e0f7ff; /* Fondo para seleccionado */
+    border-color: #0077b6; /* Borde para seleccionado */
+    color: #0077b6; /* Color de texto/icono */
+}
+
+/* Ocultar el punto de radio nativo, dejando solo el texto y el icono en el marco */
+div.stRadio input[type="radio"] {
+    display: none;
+}
+
+/* Forzar que las opciones se muestren en una fila (horizontal) y centradas */
+div.stRadio > div {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+</style>
+""", unsafe_allow_html=True)
+# --------------------------------------------------------------------
+
 # Comprobamos si la sesión ya está iniciada
-# Esta línea verifica si la clave "sesion_iniciada" existe en el estado de la sesión
-# Y también comprueba si su valor es True.
 if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]:
-    opciones = ["Inicio", "Directiva", "Promotora", "Administrador"] # Agrega más opciones si las necesitas
+    
+    opciones = ["Inicio", "Directiva", "Promotora", "Administrador"]
+    iconos = {
+        "Inicio": "🏠",       # Casa
+        "Directiva": "📈",    # Gráfico de barras
+        "Promotora": "👤",    # Usuario/Persona
+        "Administrador": "⚙️" # Engranaje
+    }
+    
+    # Preparamos las opciones para mostrar con el icono al lado
+    opciones_display = [f"{iconos[op]} {op}" for op in opciones]
 
     # --- Código para centrar las opciones en un "marco" ---
     # Creamos columnas: una estrecha a la izquierda, una ancha en el centro (para el menú), y otra estrecha a la derecha.
-    col1, col2, col3 = st.columns([1, 4, 1]) # Aumentamos el ancho de la columna central (4)
+    col1, col2, col3 = st.columns([1, 4, 1])
 
     with col2:
-        # Usamos st.container para simular el "marco" alrededor de las opciones.
-        # Streamlit aplica un ligero padding y margen, creando el efecto visual de un recuadro.
-        with st.container(border=True): # Usamos border=True para un marco visible
-            # Usamos st.radio con horizontal=True para que se vean como botones en una fila
-            seleccion = st.radio(
-                "Navegación del Sistema:",
-                opciones,
-                key="main_menu_selection",
-                horizontal=True
-            )
+        # Usamos st.radio para que las opciones aparezcan centradas y la inyección CSS las estiliza como cuadros.
+        seleccion_display = st.radio(
+            "Navegación del Sistema:",
+            opciones_display,
+            key="main_menu_selection",
+            horizontal=True
+        )
+        
+        # Obtenemos la selección real (sin el icono) para la lógica condicional
+        # Esto extrae la última palabra de la cadena (ej: "🏠 Inicio" -> "Inicio")
+        seleccion = seleccion_display.split()[-1] 
     # --- Fin del código para centrar y enmarcar ---
 
-    # Mostramos el contenido de la sección seleccionada fuera de las columnas para que ocupe todo el ancho.
+    # Mostramos el contenido de la sección seleccionada fuera de las columnas.
     st.markdown("---") # Separador visual
 
     if seleccion == "Directiva":
-        st.header("Sección Directiva")
+        st.header(f"{iconos['Directiva']} Sección Directiva")
         st.write("Panel de control y herramientas para la Directiva.")
         pass # Bloque de código para Directiva
 
     elif seleccion == "Inicio":
-        st.header("Inicio del Sistema")
+        st.header(f"{iconos['Inicio']} Inicio del Sistema")
         st.write("Has seleccionado la página de inicio.")
         # Llamamos a la función que muestra el contenido principal.
         mostrar_bienvenido()
         
     elif seleccion == "Promotora":
-        st.header("Sección Promotora")
+        st.header(f"{iconos['Promotora']} Sección Promotora")
         st.write("Contenido específico y herramientas para el rol de Promotora.")
         pass
 
     elif seleccion == "Administrador":
-        st.header("Sección Administrador")
+        st.header(f"{iconos['Administrador']} Sección Administrador")
         st.write("Contenido de gestión y configuración para el Administrador.")
         pass
 else:
