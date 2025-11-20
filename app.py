@@ -7,7 +7,7 @@ from modulos.login import login
 # Esta línea verifica si la clave "sesion_iniciada" existe en el estado de la sesión
 # Y también comprueba si su valor es True.
 if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]:
-    opciones = ["Inicio", "Directiva","Promotora","Administrador"] # Agrega más opciones si las necesitas
+    opciones = ["Inicio", "Directiva", "Promotora", "Administrador"] # Agrega más opciones si las necesitas
 
     # --- Nuevo código para centrar las opciones ---
     # Creamos columnas: una estrecha a la izquierda, una ancha en el centro y otra estrecha a la derecha.
@@ -20,20 +20,26 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
 
     # Según la opción seleccionada, mostramos el contenido correspondiente
     if seleccion == "Directiva":
-        st.header("Sección de Ventas (Contenido Principal)")
-        st.write("Aquí se mostrarán los datos y herramientas relacionados con las ventas.")
-        pass # Bloque de código para Ventas (anteriormente vacío)
+        st.header("Sección Directiva")
+        st.write("Panel de control y herramientas para la Directiva.")
+        pass # Bloque de código para Directiva
 
-    elif seleccion == "Inico":
-        st.header("Otra Opción Seleccionada")
-        st.write("Has seleccionado otra opción.")
-        # Aquí podrías agregar el contenido de otras opciones
-
+    elif seleccion == "Inicio": # Corregido de "Inico" a "Inicio"
+        st.header("Inicio del Sistema")
+        st.write("Has seleccionado la página de inicio.")
         # Si la sesión está iniciada (el usuario ha iniciado sesión),
         # llamamos a la función que muestra el contenido principal o de ventas.
         mostrar_bienvenido()
+        
     elif seleccion == "Promotora":
+        st.header("Sección Promotora")
+        st.write("Contenido específico y herramientas para el rol de Promotora.")
+        pass
+
     elif seleccion == "Administrador":
+        st.header("Sección Administrador")
+        st.write("Contenido de gestión y configuración para el Administrador.")
+        pass
 else:
     # Si la sesión no está iniciada o el estado es False,
     # llamamos a la función que muestra el formulario de inicio de sesión (login).
