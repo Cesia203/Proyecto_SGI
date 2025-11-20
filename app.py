@@ -68,7 +68,7 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
     with col2:
         # Usamos st.radio para que las opciones aparezcan centradas y la inyección CSS las estiliza como cuadros.
         seleccion_display = st.radio(
-            "Navegación del Sistema:",
+            "Opciones",
             opciones_display,
             key="main_menu_selection",
             horizontal=True
