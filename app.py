@@ -1,4 +1,4 @@
-mport streamlit as st
+import streamlit as st
 from modulos.bienvenido import mostrar_bienvenido # Importamos la función mostrar_bienvenido del módulo bienvenido
 from modulos.miembro import mostrar_miembro # Importamos la función mostrar_miembro del módulo miembro (Nueva)
 from modulos.login import login
