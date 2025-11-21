@@ -1,7 +1,7 @@
 import streamlit as st
 from modulos.config.conexion import obtener_conexion
 
-def mostrar_Miembro():
+def mostrar_miembro():
     st.header("🛒 Registrar miembro")
 
     try:
