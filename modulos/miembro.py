@@ -18,7 +18,7 @@ def mostrar_miembro():
             Dui = st.text_input("DUI")
             Nombre = st.text_input("Nombre")
             Apellido = st.text_input("Apellido")
-            Direccion = st.text_input("Dirección")
+            Dirección = st.text_input("Dirección")
             Rol = st.text_input("Rol")
             Grupo = st.text_input("Grupo") # Se corrigió 'AGrupo' por 'Grupo' para consistencia
             # ¡CUIDADO! Se repite el 'Apellido' aquí. Lo cambiamos a 'Distrito' que es el campo correcto.
@@ -42,7 +42,7 @@ def mostrar_miembro():
                         
                         # 3. y 4. Corrección de la sentencia SQL: 7 columnas = 7 marcadores (%s)
                         sql_query = """
-                            INSERT INTO Miembro (Dui, Nombre, Apellido, Direccion, Rol, Grupo, Distrito) 
+                            INSERT INTO Miembro (Dui, Nombre, Apellido, Dirección, Rol, Grupo, Distrito) 
                             VALUES (%s, %s, %s, %s, %s, %s, %s)
                         """
                         
@@ -51,7 +51,7 @@ def mostrar_miembro():
                             dui_val, 
                             str(Nombre), 
                             str(Apellido), 
-                            str(Direccion), 
+                            str(Dirección), 
                             str(Rol), 
                             str(Grupo), 
                             str(Distrito)
