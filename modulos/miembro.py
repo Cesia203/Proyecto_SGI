@@ -17,7 +17,7 @@ def mostrar_miembro():
             Nombre = st.text_input("Nombre")
             Apellido = st.text_input("Apellido")
             # 👈 La variable Python se llama 'Direccion' (sin tilde)
-            Direccion = st.text_input("Dirección") 
+            Dirección = st.text_input("Dirección") 
             Rol = st.text_input("Rol")
             Grupo = st.text_input("Grupo")
             Distrito = st.text_input("Distrito")
@@ -35,7 +35,7 @@ def mostrar_miembro():
                         
                         # 3. Sentencia SQL corregida: usando 'Direccion' (sin tilde)
                         sql_query = """
-                            INSERT INTO Miembro (Dui, Nombre, Apellido, Direccion, Rol, Grupo, Distrito) 
+                            INSERT INTO Miembro (Dui, Nombre, Apellido, Dirección, Rol, Grupo, Distrito) 
                             VALUES (%s, %s, %s, %s, %s, %s, %s)
                         """
                         
@@ -44,7 +44,7 @@ def mostrar_miembro():
                             dui_val,  
                             str(Nombre),  
                             str(Apellido),  
-                            str(Direccion), # Usamos la variable sin tilde
+                            str(Dirección), # Usamos la variable sin tilde
                             str(Rol),  
                             str(Grupo),  
                             str(Distrito)
