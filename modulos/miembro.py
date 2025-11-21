@@ -9,7 +9,7 @@ def mostrar_Miembro():
         cursor = con.cursor()
 
         # Formulario para registrar miembro
-        with st.form("form_venta"):
+        with st.form("form_miembro"):
            Nombre = st.text_input("Nombre ")
           Apellido = st.text_input("Apellido")
           Direccion = st.text_input("Direccion")
