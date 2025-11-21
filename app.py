@@ -1,6 +1,6 @@
-import streamlit as st
+mport streamlit as st
 from modulos.bienvenido import mostrar_bienvenido # Importamos la función mostrar_bienvenido del módulo bienvenido
-from modulos.miembro import mostrar_miembro
+from modulos.miembro import mostrar_miembro # Importamos la función mostrar_miembro del módulo miembro (Nueva)
 from modulos.login import login
 
 # Configuración básica de la página (opcional, pero útil para centrar)
@@ -59,33 +59,62 @@ div.stRadio > div {
 # Comprobamos si la sesión ya está iniciada
 if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]:
     
-    opciones = ["Inicio", "Directiva", "Promotora", "Administrador"]
-    iconos = {
-        "Inicio": "🏠",       # Casa
-        "Directiva": "📈",    # Gráfico de barras
-        "Promotora": "👤",    # Usuario/Persona
-        "Administrador": "⚙️" # Engranaje
-    }
+    # =========================================================================
+    # LÓGICA DE ROLES PARA FILTRAR EL MENÚ (Restaurada)
+    # =========================================================================
     
-    # Preparamos las opciones para mostrar con el icono al lado
-    opciones_display = [f"{iconos[op]} {op}" for op in opciones]
+    # --- TEMPORAL: Selector de Rol para Demostración (ELIMINAR EN PRODUCCIÓN) ---
+    # Usamos los roles exactos de tu base de datos (Presidente, Admin, Promotora)
+    roles_db = ["Presidente", "Admin", "Promotora"]
+    # Simulamos que el rol del usuario se obtiene de la sesión
+    st.session_state["user_role"] = st.sidebar.selectbox("Simular Rol (DEMO):", roles_db, key="role_selector")
+    # --- FIN TEMPORAL ---
+
+    # Obtenemos el rol actual.
+    user_role = st.session_state.get("user_role", None)
+
+    # 1. Definimos las opciones disponibles (todas)
+    todas_las_opciones = {
+        "Inicio": "🏠",
+        "Directiva": "📈",
+        "Promotora": "👤",
+        "Administrador": "⚙️"
+    }
+
+    # 2. Mapeo de Roles de DB a Opciones de Menú
+    opciones_disponibles_nombres = ["Inicio"] # 'Inicio' siempre está disponible
+
+    if user_role == "Presidente":
+        opciones_disponibles_nombres.append("Directiva")
+    elif user_role == "Admin":
+        opciones_disponibles_nombres.append("Administrador")
+    elif user_role == "Promotora":
+        opciones_disponibles_nombres.append("Promotora")
+        
+    opciones = opciones_disponibles_nombres
+    
+    # 3. Preparamos SOLO las opciones disponibles con su icono para mostrar
+    opciones_display = [f"{todas_las_opciones[op]} {op}" for op in opciones]
+
+    # Determinamos qué opción debe estar seleccionada por defecto (generalmente la primera)
+    default_selection_display = opciones_display[0] if opciones_display else "Inicio"
+
 
     # --- Código para centrar las opciones en un "marco" ---
-    # Creamos columnas: una estrecha a la izquierda, una ancha en el centro (para el menú), y otra estrecha a la derecha.
     col1, col2, col3 = st.columns([1, 4, 1])
 
     with col2:
-        # Usamos st.radio para que las opciones aparezcan centradas y la inyección CSS las estiliza como cuadros.
-        # El título "OPCIONES" ahora se centrará y estará en negrita gracias al CSS inyectado.
+        # Usamos st.radio con las opciones FILTRADAS
         seleccion_display = st.radio(
             "OPCIONES",
             opciones_display,
+            # Establecemos el índice por defecto para prevenir errores de indexación al filtrar
+            index=opciones_display.index(default_selection_display) if default_selection_display in opciones_display else 0,
             key="main_menu_selection",
             horizontal=True
         )
         
         # Obtenemos la selección real (sin el icono) para la lógica condicional
-        # Esto extrae la última palabra de la cadena (ej: "🏠 Inicio" -> "Inicio")
         seleccion = seleccion_display.split()[-1] 
     # --- Fin del código para centrar y enmarcar ---
 
@@ -93,25 +122,29 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
     st.markdown("---") # Separador visual
 
     if seleccion == "Directiva":
-        st.header(f"{iconos['Directiva']} Sección Directiva")
+        st.header(f"{todas_las_opciones['Directiva']} Sección Directiva")
         st.write("Panel de control y herramientas para la Directiva.")
-        pass # Bloque de código para Directiva
-        mostrar_miembro()
+        st.write(f"Rol actual: **{user_role}**")
+        # Llamada a la nueva función
+        mostrar_miembro() 
 
     elif seleccion == "Inicio":
-        st.header(f"{iconos['Inicio']} Inicio del Sistema")
+        st.header(f"{todas_las_opciones['Inicio']} Inicio del Sistema")
         st.write("Has seleccionado la página de inicio.")
-        # Llamamos a la función que muestra el contenido principal.
-        mostrar_bienvenido()
+        st.write(f"Rol actual: **{user_role}**")
+        # LLAMADA CORREGIDA: Usamos la función importada 'mostrar_bienvenido'
+        mostrar_bienvenido() 
         
     elif seleccion == "Promotora":
-        st.header(f"{iconos['Promotora']} Sección Promotora")
+        st.header(f"{todas_las_opciones['Promotora']} Sección Promotora")
         st.write("Contenido específico y herramientas para el rol de Promotora.")
+        st.write(f"Rol actual: **{user_role}**")
         pass
 
     elif seleccion == "Administrador":
-        st.header(f"{iconos['Administrador']} Sección Administrador")
+        st.header(f"{todas_las_opciones['Administrador']} Sección Administrador")
         st.write("Contenido de gestión y configuración para el Administrador.")
+        st.write(f"Rol actual: **{user_role}**")
         pass
 else:
     # Si la sesión no está iniciada o el estado es False,
