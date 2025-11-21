@@ -96,7 +96,7 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
         st.header(f"{iconos['Directiva']} Sección Directiva")
         st.write("Panel de control y herramientas para la Directiva.")
         pass # Bloque de código para Directiva
-        mostra_Miembro()
+        mostrar_Miembro()
 
     elif seleccion == "Inicio":
         st.header(f"{iconos['Inicio']} Inicio del Sistema")
