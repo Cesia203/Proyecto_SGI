@@ -1,6 +1,6 @@
 import streamlit as st
 from modulos.bienvenido import mostrar_bienvenido # Importamos la función mostrar_bienvenido del módulo bienvenido
-
+from modulos.Miembro import mostrar_Miembro
 from modulos.login import login
 
 # Configuración básica de la página (opcional, pero útil para centrar)
