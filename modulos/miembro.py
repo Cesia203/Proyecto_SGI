@@ -12,6 +12,10 @@ def mostrar_miembro():
         # Formulario para registrar miembro
         with st.form("form_miembro"):
             # 1. Variables del formulario
+             # El Dui debería ser de 8 dígitos para un documento de identidad,
+            # pero el paso (step) de 8 es inusual, se dejó en 1.
+            # Se usa st.text_input y se convierte a entero si es necesario para DB.
+            Dui = st.text_input("DUI")
             Nombre = st.text_input("Nombre")
             Apellido = st.text_input("Apellido")
             Direccion = st.text_input("Dirección")
@@ -20,13 +24,10 @@ def mostrar_miembro():
             # ¡CUIDADO! Se repite el 'Apellido' aquí. Lo cambiamos a 'Distrito' que es el campo correcto.
             Distrito = st.text_input("Distrito")
             
-            # El Dui debería ser de 8 dígitos para un documento de identidad,
-            # pero el paso (step) de 8 es inusual, se dejó en 1.
-            # Se usa st.text_input y se convierte a entero si es necesario para DB.
-            Dui = st.text_input("DUI")
+           
             
 
-            enviar = st.form_submit_button("✅ Miembro registrado")
+            enviar = st.form_submit_button("✅ Registrar")
 
             if enviar:
                 # 2. Validación: Usar la variable correcta (e.g., Nombre) en lugar de 'producto'
