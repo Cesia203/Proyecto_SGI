@@ -14,7 +14,7 @@ def mostrar_Miembro():
           Apellido = st.text_input("Apellido")
           Direccion = st.text_input("Direccion")
           Rol = st.text_input("Rol")
-          Grupo = st.text_input("Apellido")
+          Grupo = st.text_input("AGrupo")
           Distrito = st.text_input("Apellido")
      
           
