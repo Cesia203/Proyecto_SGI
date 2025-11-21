@@ -1,6 +1,6 @@
 import streamlit as st
 from modulos.bienvenido import mostrar_bienvenido # Importamos la función mostrar_bienvenido del módulo bienvenido
-from modulos.Miembro import mostrar_Miembro
+from modulos.miembro import mostrar_miembro
 from modulos.login import login
 
 # Configuración básica de la página (opcional, pero útil para centrar)
@@ -96,7 +96,7 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
         st.header(f"{iconos['Directiva']} Sección Directiva")
         st.write("Panel de control y herramientas para la Directiva.")
         pass # Bloque de código para Directiva
-        mostrar_Miembro()
+        mostrar_miembro()
 
     elif seleccion == "Inicio":
         st.header(f"{iconos['Inicio']} Inicio del Sistema")
