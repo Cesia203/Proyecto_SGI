@@ -2,65 +2,58 @@ import streamlit as st
 from modulos.config.conexion import obtener_conexion
 
 def mostrar_miembro():
-    # El título parece más adecuado para "Registro" que para "Carrito de compras"
     st.header("📝 Registrar Miembro")
 
+    # Intentar obtener la conexión a la base de datos
     try:
         con = obtener_conexion()
         cursor = con.cursor()
 
         # Formulario para registrar miembro
         with st.form("form_miembro"):
-            # 1. Variables del formulario
-             # El Dui debería ser de 8 dígitos para un documento de identidad,
-            # pero el paso (step) de 8 es inusual, se dejó en 1.
-            # Se usa st.text_input y se convierte a entero si es necesario para DB.
+            # Variables del formulario
+            # El campo mostrado al usuario sigue siendo 'Dirección' (con tilde)
             Dui = st.text_input("DUI")
             Nombre = st.text_input("Nombre")
             Apellido = st.text_input("Apellido")
-            Dirección = st.text_input("Dirección")
+            # 👈 La variable Python se llama 'Direccion' (sin tilde)
+            Direccion = st.text_input("Dirección") 
             Rol = st.text_input("Rol")
-            Grupo = st.text_input("Grupo") # Se corrigió 'AGrupo' por 'Grupo' para consistencia
-            # ¡CUIDADO! Se repite el 'Apellido' aquí. Lo cambiamos a 'Distrito' que es el campo correcto.
+            Grupo = st.text_input("Grupo")
             Distrito = st.text_input("Distrito")
             
-           
-            
-
             enviar = st.form_submit_button("✅ Registrar")
 
             if enviar:
-                # 2. Validación: Usar la variable correcta (e.g., Nombre) en lugar de 'producto'
+                # 1. Validación de campos obligatorios
                 if Nombre.strip() == "" or Apellido.strip() == "" or Dui.strip() == "":
                     st.warning("⚠️ Debes ingresar al menos el Nombre, Apellido y DUI.")
                 else:
                     try:
-                        # Convertir Dui a entero antes de la inserción si es necesario, 
-                        # o manejarlo como string si la columna en DB es TEXT/VARCHAR. 
-                        # Asumo que Dui es un número entero.
+                        # 2. Conversión de Dui
                         dui_val = int(Dui)
                         
-                        # 3. y 4. Corrección de la sentencia SQL: 7 columnas = 7 marcadores (%s)
+                        # 3. Sentencia SQL corregida: usando 'Direccion' (sin tilde)
                         sql_query = """
-                            INSERT INTO Miembro (Dui, Nombre, Apellido, Dirección, Rol, Grupo, Distrito) 
+                            INSERT INTO Miembro (Dui, Nombre, Apellido, Direccion, Rol, Grupo, Distrito) 
                             VALUES (%s, %s, %s, %s, %s, %s, %s)
                         """
                         
-                        # 4. Corrección de la tupla de valores: Pasar las 7 variables en el orden correcto
+                        # 4. Tupla de valores (usando la variable 'Direccion' sin tilde)
                         values = (
-                            dui_val, 
-                            str(Nombre), 
-                            str(Apellido), 
-                            str(Dirección), 
-                            str(Rol), 
-                            str(Grupo), 
+                            dui_val,  
+                            str(Nombre),  
+                            str(Apellido),  
+                            str(Direccion), # Usamos la variable sin tilde
+                            str(Rol),  
+                            str(Grupo),  
                             str(Distrito)
                         )
                         
                         cursor.execute(sql_query, values)
                         con.commit()
                         
-                        # Mensaje de éxito corregido
+                        # Mensaje de éxito y reinicio de la página
                         st.success(f"✅ Miembro registrado correctamente: {Nombre} {Apellido} (DUI: {Dui})")
                         st.rerun()
                         
