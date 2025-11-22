@@ -1,7 +1,7 @@
 import streamlit as st
 from modulos.config.conexion import obtener_conexion
 
-def mostrar_administrador():
+def Administrador():
     st.header("👨‍💼 Registrar Administrador")
 
     # Intentar obtener la conexión a la base de datos
