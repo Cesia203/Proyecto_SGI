@@ -2,7 +2,7 @@ import streamlit as st
 from modulos.bienvenido import mostrar_bienvenido # Importamos la función mostrar_bienvenido del módulo bienvenido
 from modulos.miembro import mostrar_miembro # Importamos la función mostrar_miembro del módulo miembro (Nueva)
 from modulos.login import login
-
+from modulos.Reunion import mostrar_Reunion 
 # Configuración básica de la página (opcional, pero útil para centrar)
 st.set_page_config(layout="centered")
 
@@ -170,6 +170,7 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
         elif sub_seleccion == "Asistencia a reuniones":
             st.subheader("Control de Asistencia")
             st.info("Módulo para registrar la asistencia de los miembros a las reuniones de la directiva/asamblea.")
+            mostrar_Reunion()
         elif sub_seleccion == "Ahorros":
             st.subheader("Gestión de Ahorros")
             st.info("Visualización y gestión de las cuentas de ahorro de los miembros.")
