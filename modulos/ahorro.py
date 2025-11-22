@@ -2,7 +2,7 @@ import streamlit as st
 from modulos.config.conexion import obtener_conexion
 
 # Renombrado de la función para registro (Originalmente incompleta)
-def registrar_ahorro():
+def ahorro():
     st.header("💰 Registrar Nuevo Ahorro")
     
     try:
