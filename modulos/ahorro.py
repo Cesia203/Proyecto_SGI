@@ -3,10 +3,11 @@ import datetime
 # Mantener la importación de la conexión a la base de datos
 from modulos.config.conexion import obtener_conexion
 
-def ahorro():
+def mostrar_ahorro():
     """
     Muestra el formulario para registrar un nuevo depósito de ahorro
     y gestiona la inserción de datos en la tabla 'Ahorro'.
+    (Función renombrada para coincidir con la importación en app.py)
     """
     st.header("💰 Registrar Depósito de Ahorro")
 
@@ -79,8 +80,3 @@ def ahorro():
             cursor.close()
         if 'con' in locals() and con:
             con.close()
-
-# Si quieres probar esta función en un script Streamlit local, puedes añadir:
-# if __name__ == "__main__":
-#     # Debes asegurarte de que 'obtener_conexion' esté disponible y configurado
-#     mostrar_registro_ahorro()
