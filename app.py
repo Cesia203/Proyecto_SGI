@@ -1,14 +1,16 @@
 import streamlit as st
-from modulos.bienvenido import mostrar_bienvenido # Importamos la función mostrar_bienvenido del módulo bienvenido
-from modulos.miembro import mostrar_miembro # Importamos la función mostrar_miembro del módulo miembro (Nueva)
+# Importamos las funciones necesarias de los módulos.
+# Estos módulos deben residir en una carpeta 'modulos'
+from modulos.bienvenido import mostrar_bienvenido
+from modulos.miembro import mostrar_miembro
 from modulos.login import login
 from modulos.reunion import mostrar_reunion 
-# Configuración básica de la página (opcional, pero útil para centrar)
-st.set_page_config(layout="centered")
+
+# Configuración básica de la página
+st.set_page_config(layout="centered", page_title="Gestión Cooperativa")
 
 # --- Bloque de Inyección CSS para Enmarcar y Estilizar las Opciones ---
-# Este código inyecta CSS para que los botones de radio se vean como cajas separadas
-# y resalta la opción seleccionada.
+# Este CSS hace que los botones de radio se vean como cajas separadas.
 st.markdown("""
 <style>
 /* Centrar el texto del label/título del st.radio (la palabra "OPCIONES") */
@@ -16,7 +18,7 @@ div.stRadio > p {
     text-align: center;
     font-size: 1.5em; /* Tamaño de fuente más grande para el título */
     color: #0077b6; /* Color azul para destacar el título */
-    font-weight: 900; /* AHORA EN NEGRITA MÁS GRUESA */
+    font-weight: 900;
     margin-bottom: 15px;
 }
 
@@ -32,6 +34,8 @@ div.stRadio > label {
     font-weight: bold;
     cursor: pointer;
     flex-grow: 1; /* Asegura que las cajas se distribuyan uniformemente */
+    min-width: 150px; /* Asegura un tamaño mínimo para cada caja */
+    text-align: center; /* Centrar el texto dentro de la etiqueta */
 }
 
 /* Estilo cuando una opción de radio está activa/seleccionada */
@@ -41,7 +45,7 @@ div.stRadio > label[data-testid*="stDecoration"] {
     color: #0077b6; /* Color de texto/icono */
 }
 
-/* Ocultar el punto de radio nativo, dejando solo el texto y el icono en el marco */
+/* Ocultar el punto de radio nativo */
 div.stRadio input[type="radio"] {
     display: none;
 }
@@ -60,14 +64,20 @@ div.stRadio > div {
 if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]:
     
     # =========================================================================
-    # LÓGICA DE ROLES PARA FILTRAR EL MENÚ (Restaurada)
+    # LÓGICA DE ROLES PARA FILTRAR EL MENÚ
     # =========================================================================
     
-    # --- TEMPORAL: Selector de Rol para Demostración (ELIMINAR EN PRODUCCIÓN) ---
-    # Usamos los roles exactos de tu base de datos (Presidente, Admin, Promotora)
+    # --- TEMPORAL: Selector de Rol para Demostración (Mantener para probar la navegación) ---
     roles_db = ["Presidente", "Admin", "Promotora"]
-    # Simulamos que el rol del usuario se obtiene de la sesión
-    st.session_state["user_role"] = st.sidebar.selectbox("Simular Rol (DEMO):", roles_db, index=roles_db.index(st.session_state.get("user_role", "Presidente")), key="role_selector")
+    if "user_role" not in st.session_state:
+         st.session_state["user_role"] = "Presidente"
+
+    st.session_state["user_role"] = st.sidebar.selectbox(
+        "Simular Rol (DEMO):", 
+        roles_db, 
+        index=roles_db.index(st.session_state["user_role"]), 
+        key="role_selector"
+    )
     # --- FIN TEMPORAL ---
 
     # Obtenemos el rol actual.
@@ -97,20 +107,17 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
     # 3. Preparamos SOLO las opciones disponibles con su icono para mostrar
     opciones_display = [f"{todas_las_opciones[op]} {op}" for op in opciones]
 
-    # Determinamos qué opción debe estar seleccionada por defecto (generalmente la primera)
-    # Mantenemos la selección actual si es válida, o volvemos a 'Inicio'.
+    # Determinamos qué opción debe estar seleccionada por defecto
     current_selection = st.session_state.get("last_selection", "Inicio")
     
-    # Obtenemos el índice de la selección actual dentro de las opciones disponibles
     try:
-        # Intentamos encontrar la opción actual (sin icono) en las opciones disponibles
+        # Buscamos el índice de la opción real (sin icono)
         seleccion_actual_index = opciones.index(current_selection)
     except ValueError:
-        # Si la opción anterior no está en las opciones disponibles del nuevo rol, volvemos a 0 (Inicio)
+        # Si la opción anterior no es válida para el rol, volvemos a 'Inicio'
         seleccion_actual_index = 0 
         st.session_state["last_selection"] = opciones[0]
         
-
     # --- Código para centrar las opciones en un "marco" ---
     col1, col2, col3 = st.columns([1, 4, 1])
 
@@ -119,26 +126,26 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
         seleccion_display = st.radio(
             "OPCIONES",
             opciones_display,
-            index=seleccion_actual_index, # Usamos el índice de la selección anterior o 0
+            index=seleccion_actual_index, 
             key="main_menu_selection",
             horizontal=True
         )
         
         # Obtenemos la selección real (sin el icono) para la lógica condicional
-        seleccion = seleccion_display.split()[-1]
+        # Usamos rsplit para evitar problemas si el nombre tiene espacios
+        seleccion = seleccion_display.rsplit(' ', 1)[-1] 
         
-        # Guardamos la selección actual para mantenerla al recargar (cambio de rol)
+        # Guardamos la selección actual
         st.session_state["last_selection"] = seleccion
         
     # --- Fin del código para centrar y enmarcar ---
 
-    # Mostramos el contenido de la sección seleccionada fuera de las columnas.
+    # Mostramos el contenido de la sección seleccionada.
     st.markdown("---") # Separador visual
 
     if seleccion == "Directiva":
-        st.header(f"{todas_las_opciones['Directiva']} Sección Directiva")
-        st.write("Panel de control y herramientas para la Directiva.")
-        st.write(f"Rol actual: **{user_role}**")
+        st.title(f"{todas_las_opciones['Directiva']} Sección Directiva")
+        st.markdown(f"<p class='text-lg'>Rol de acceso: <b>{user_role}</b></p>", unsafe_allow_html=True)
         
         # --- NUEVO MENÚ DE SUB-OPCIONES PARA DIRECTIVA ---
         sub_opciones_directiva = [
@@ -150,66 +157,81 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
             "Pagos"
         ]
         
-        # Usamos un selectbox para el sub-menú y lo centramos visualmente
-        sub_col1, sub_col2, sub_col3 = st.columns([1, 3, 1])
-        with sub_col2:
-            sub_seleccion = st.selectbox(
-                "Módulos de Gestión",
-                sub_opciones_directiva,
-                key="directiva_sub_menu"
-            )
+        # Usamos pestañas para organizar mejor los sub-módulos (más moderno y limpio)
+        tabs = st.tabs(sub_opciones_directiva)
 
-        st.markdown("---") # Separador visual para el contenido del sub-módulo
+        if tabs[0]: # Registrar miembro
+            with tabs[0]:
+                st.subheader("Registro de Nuevos Miembros")
+                st.info("Formulario para ingresar datos de un nuevo miembro.")
+                mostrar_miembro() 
         
-        # Lógica para mostrar contenido basado en la sub-selección
-        if sub_seleccion == "Registrar miembro":
-            st.subheader("Registro de Nuevos Miembros")
-            st.info("Formulario para ingresar datos de un nuevo miembro de la cooperativa/asociación.")
-            
-            mostrar_miembro() # Descomentar si se quiere usar el dashboard original en alguna sub-página# Aquí podríamos llamar a una función como `modulos.miembro.mostrar_formulario_registro()`
-        elif sub_seleccion == "Asistencia a reuniones":
-            st.subheader("Control de Asistencia")
-            st.info("Módulo para registrar la asistencia de los miembros a las reuniones de la directiva/asamblea.")
-            mostrar_reunion()
-        elif sub_seleccion == "Ahorros":
-            st.subheader("Gestión de Ahorros")
-            st.info("Visualización y gestión de las cuentas de ahorro de los miembros.")
-        elif sub_seleccion == "Préstamos":
-            st.subheader("Administración de Préstamos")
-            st.info("Panel de control para solicitudes, desembolsos y seguimiento de pagos de préstamos.")
-        elif sub_seleccion == "Multas":
-            st.subheader("Registro y Seguimiento de Multas")
-            st.info("Módulo para imponer, registrar y hacer seguimiento a las multas aplicadas.")
-        elif sub_seleccion == "Pagos":
-            st.subheader("Historial y Transacciones de Pagos")
-            st.info("Registro de todos los pagos realizados por los miembros (cuotas, multas, préstamos, etc.).")
-            
-        # El contenido de mostrar_miembro() se puede integrar aquí si es necesario, 
-        # pero por ahora lo dejo comentado o lo descarto ya que el usuario pidió nuevas opciones.
+        if tabs[1]: # Asistencia a reuniones
+            with tabs[1]:
+                st.subheader("Control de Asistencia")
+                st.info("Módulo para registrar la asistencia a las reuniones.")
+                mostrar_reunion()
         
+        if tabs[2]: # Ahorros
+            with tabs[2]:
+                st.subheader("Gestión de Ahorros")
+                st.info("Visualización y gestión de las cuentas de ahorro de los miembros.")
+                st.warning("Implementación pendiente: Lógica de bases de datos para ahorros.")
+                
+        if tabs[3]: # Préstamos
+            with tabs[3]:
+                st.subheader("Administración de Préstamos")
+                st.info("Panel de control para solicitudes, desembolsos y seguimiento de pagos de préstamos.")
+                st.warning("Implementación pendiente: Lógica de bases de datos para préstamos.")
 
+        if tabs[4]: # Multas
+            with tabs[4]:
+                st.subheader("Registro y Seguimiento de Multas")
+                st.info("Módulo para imponer, registrar y hacer seguimiento a las multas aplicadas.")
+                st.warning("Implementación pendiente: Lógica de bases de datos para multas.")
+
+        if tabs[5]: # Pagos
+            with tabs[5]:
+                st.subheader("Historial y Transacciones de Pagos")
+                st.info("Registro de todos los pagos realizados por los miembros.")
+                st.warning("Implementación pendiente: Lógica de bases de datos para pagos.")
+        
     elif seleccion == "Inicio":
-        st.header(f"{todas_las_opciones['Inicio']} Inicio del Sistema")
-        st.write("Has seleccionado la página de inicio.")
-        st.write(f"Rol actual: **{user_role}**")
-        # LLAMADA CORREGIDA: Usamos la función importada 'mostrar_bienvenido'
+        st.title(f"{todas_las_opciones['Inicio']} Inicio del Sistema")
+        st.markdown(f"<p class='text-lg'>Rol de acceso: <b>{user_role}</b></p>", unsafe_allow_html=True)
         mostrar_bienvenido() 
         
     elif seleccion == "Promotora":
-        st.header(f"{todas_las_opciones['Promotora']} Sección Promotora")
-        st.write("Contenido específico y herramientas para el rol de Promotora.")
-        st.write(f"Rol actual: **{user_role}**")
-        st.info("Aquí irían las herramientas para la gestión de clientes y campañas de la promotora.")
+        st.title(f"{todas_las_opciones['Promotora']} Sección Promotora")
+        st.markdown(f"<p class='text-lg'>Rol de acceso: <b>{user_role}</b></p>", unsafe_allow_html=True)
+        st.info("Aquí irían las herramientas para la gestión de clientes, seguimiento de prospectos y campañas de la promotora.")
         
     elif seleccion == "Administrador":
-        st.header(f"{todas_las_opciones['Administrador']} Sección Administrador")
-        st.write("Contenido de gestión y configuración para el Administrador.")
-        st.write(f"Rol actual: **{user_role}**")
-        st.warning("Página de gestión de usuarios y ajustes del sistema.")
+        st.title(f"{todas_las_opciones['Administrador']} Sección Administrador")
+        st.markdown(f"<p class='text-lg'>Rol de acceso: <b>{user_role}</b></p>", unsafe_allow_html=True)
         
+        st.warning("Página de gestión de usuarios y ajustes del sistema. Solo para personal autorizado.")
+        
+        # Sub-menú para el Administrador
+        admin_opciones = ["Gestión de Usuarios", "Ajustes del Sistema", "Logs de Auditoría"]
+        admin_tab = st.tabs(admin_opciones)
+
+        with admin_tab[0]:
+            st.subheader("Control de Usuarios y Roles")
+            st.write("Herramientas para crear, editar y asignar roles a los usuarios.")
+            st.error("Implementación pendiente: CRUD de usuarios.")
+        
+        with admin_tab[1]:
+            st.subheader("Configuración Global")
+            st.write("Ajustes de cuotas, tasas de interés por defecto y períodos de reunión.")
+            
+        with admin_tab[2]:
+            st.subheader("Historial de Operaciones")
+            st.write("Registro detallado de todas las acciones realizadas por los usuarios en el sistema.")
+            
     # Botón de cierre de sesión en la barra lateral
     st.sidebar.markdown("---")
-    if st.sidebar.button("Cerrar Sesión"):
+    if st.sidebar.button("Cerrar Sesión", type="primary"):
         st.session_state["sesion_iniciada"] = False
         # Limpiamos el rol y la selección anterior
         if "user_role" in st.session_state:
@@ -219,6 +241,5 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
         st.rerun()
 
 else:
-    # Si la sesión no está iniciada o el estado es False,
-    # llamamos a la función que muestra el formulario de inicio de sesión (login).
+    # Si la sesión no está iniciada, mostramos el formulario de inicio de sesión
     login()
