@@ -5,7 +5,7 @@ from modulos.bienvenido import mostrar_bienvenido
 from modulos.miembro import mostrar_miembro
 from modulos.login import login
 from modulos.reunion import mostrar_reunion 
-
+from modulos.ahorro import mostrar_ahorro
 # Configuración básica de la página
 st.set_page_config(layout="centered", page_title="Gestión Cooperativa")
 
@@ -177,7 +177,7 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
                 st.subheader("Gestión de Ahorros")
                 st.info("Visualización y gestión de las cuentas de ahorro de los miembros.")
                 st.warning("Implementación pendiente: Lógica de bases de datos para ahorros.")
-                
+                mostrar_ahorro()
         if tabs[3]: # Préstamos
             with tabs[3]:
                 st.subheader("Administración de Préstamos")
