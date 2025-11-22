@@ -5,6 +5,10 @@ from modulos.config.conexion import obtener_conexion
 def registrar_ahorro():
     st.header("💰 Registrar Nuevo Ahorro")
     
+    # Inicializar variables antes del bloque try para asegurar que finally pueda acceder a ellas.
+    con = None
+    cursor = None
+    
     try:
         con = obtener_conexion()
         cursor = con.cursor()
@@ -54,6 +58,10 @@ def registrar_ahorro():
 # Función adicional para mostrar ahorros existentes
 def mostrar_lista_ahorros():
     st.header("📋 Lista de Ahorros")
+    
+    # Inicializar variables antes del bloque try para asegurar que finally pueda acceder a ellas.
+    con = None
+    cursor = None
     
     try:
         con = obtener_conexion()
@@ -123,6 +131,10 @@ def mostrar_lista_ahorros():
 # Función para buscar ahorros
 def buscar_ahorros():
     st.header("🔍 Buscar Ahorros")
+    
+    # Inicializar variables antes del bloque try para asegurar que finally pueda acceder a ellas.
+    con = None
+    cursor = None
     
     try:
         con = obtener_conexion()
@@ -220,6 +232,10 @@ def buscar_ahorros():
 def resumen_ahorros():
     st.header("📊 Resumen de Ahorros")
     
+    # Inicializar variables antes del bloque try para asegurar que finally pueda acceder a ellas.
+    con = None
+    cursor = None
+    
     try:
         con = obtener_conexion()
         cursor = con.cursor()
@@ -287,4 +303,4 @@ def mostrar_ahorro():
         buscar_ahorros()
     
     with tab4:
-        resumen_ahorros(
+        resumen_ahorros()
