@@ -1,7 +1,7 @@
 import streamlit as st
 from modulos.config.conexion import obtener_conexion
 
-def mostrar_reporte():
+def REPORTE():
     st.header("📊 Generar Reporte")
 
     # Intentar obtener la conexión a la base de datos
