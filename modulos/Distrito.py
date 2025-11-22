@@ -1,7 +1,7 @@
 import streamlit as st
 from modulos.config.conexion import obtener_conexion
 
-def mostrar_distrito():
+def Distrito():
     st.header("🗺️ Registrar Distrito")
 
     # Intentar obtener la conexión a la base de datos
