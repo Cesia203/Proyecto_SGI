@@ -70,7 +70,7 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
     # --- TEMPORAL: Selector de Rol para Demostración (Mantener para probar la navegación) ---
     roles_db = ["Presidente", "Admin", "Promotora"]
     if "user_role" not in st.session_state:
-         st.session_state["user_role"] = "Presidente"
+        st.session_state["user_role"] = "Presidente"
 
     st.session_state["user_role"] = st.sidebar.selectbox(
         "Simular Rol (DEMO):", 
