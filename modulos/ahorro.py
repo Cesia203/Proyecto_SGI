@@ -1,87 +1,51 @@
 import streamlit as st
 from modulos.config.conexion import obtener_conexion
 
-def mostrar_ahorro():
-    st.header("💰 Registrar Ahorro")
-
-    # Intentar obtener la conexión a la base de datos
+# Renombrado de la función para registro (Originalmente incompleta)
+def registrar_ahorro():
+    st.header("💰 Registrar Nuevo Ahorro")
+    
     try:
         con = obtener_conexion()
         cursor = con.cursor()
-
-        # Obtener miembros disponibles para el campo FK
+        
+        # Obtener miembros activos para el selectbox
         cursor.execute("SELECT Dui, Nombre, Apellido FROM Miembro WHERE Estado = 'Activo'")
         miembros = cursor.fetchall()
+        miembro_options = {f"{miembro[1]} {miembro[2]} - {miembro[0]}": miembro[0] for miembro in miembros}
+        
+        if not miembros:
+            st.warning("⚠️ No hay miembros activos para registrar ahorros.")
+            return
 
-        # Formulario para registrar ahorro
         with st.form("form_ahorro"):
-            # Campo FK para Dui (miembro)
-            if miembros:
-                miembro_options = {f"{miembro[1]} {miembro[2]} (DUI: {miembro[0]})": miembro[0] for miembro in miembros}
-                miembro_seleccionado = st.selectbox("Miembro*", list(miembro_options.keys()))
-                Dui = miembro_options[miembro_seleccionado]
-            else:
-                st.warning("No hay miembros activos disponibles. Debe crear un miembro primero.")
-                Dui = None
+            # Selectbox para el miembro
+            miembro_seleccionado = st.selectbox("Seleccione Miembro", list(miembro_options.keys()), key="reg_miembro")
             
-            # Campo para Monto actual
-            Monto_actual = st.number_input(
-                "Monto Actual*", 
-                min_value=0.0, 
-                step=0.01,
-                format="%.2f"
-            )
+            # Campos de monto y saldo inicial
+            monto_actual = st.number_input("Monto Inicial", min_value=1.00, step=1.00, format="%.2f", key="reg_monto")
+            saldo_actual = st.number_input("Saldo Inicial", min_value=1.00, step=1.00, format="%.2f", key="reg_saldo")
             
-            # Campo para Saldo actual
-            Saldo_actual = st.number_input(
-                "Saldo Actual*", 
-                min_value=0.0, 
-                step=0.01,
-                format="%.2f"
-            )
+            fecha_actualizacion = st.date_input("Fecha de Registro", key="reg_fecha")
             
-            # Campo para Fecha de Actualización
-            Fecha_actualizacion = st.date_input("Fecha de Actualización*")
-            
-            enviar = st.form_submit_button("✅ Registrar Ahorro")
+            submitted = st.form_submit_button("Guardar Ahorro", type="primary")
 
-            if enviar:
-                # 1. Validación de campos obligatorios
-                if (not Dui or Monto_actual is None or 
-                    Saldo_actual is None or not Fecha_actualizacion):
-                    st.warning("⚠️ Debes completar todos los campos obligatorios (*)")
-                else:
-                    try:
-                        # 2. Sentencia SQL para insertar ahorro - USANDO "AHORROS"
-                        sql_query = """
-                            INSERT INTO AHORROS (Monto_actual, Saldo_actual, Fecha_actualizacion, Dui) 
-                            VALUES (%s, %s, %s, %s)
-                        """
-                        
-                        # 3. Tupla de valores
-                        values = (
-                            float(Monto_actual),
-                            float(Saldo_actual),
-                            Fecha_actualizacion,
-                            int(Dui)
-                        )
-                        
-                        cursor.execute(sql_query, values)
-                        con.commit()
-                        
-                        # Mensaje de éxito y reinicio de la página
-                        st.success(f"✅ Ahorro registrado correctamente: ${Monto_actual:.2f} - Saldo: ${Saldo_actual:.2f}")
-                        st.rerun()
-                        
-                    except Exception as e:
-                        con.rollback()
-                        st.error(f"❌ Error al registrar el ahorro en la base de datos: {e}")
+            if submitted:
+                dui = miembro_options[miembro_seleccionado]
+                
+                # Insertar el nuevo registro de ahorro
+                cursor.execute(
+                    "INSERT INTO AHORROS (Monto_actual, Saldo_actual, Fecha_actualizacion, Dui) VALUES (%s, %s, %s, %s)",
+                    (monto_actual, saldo_actual, fecha_actualizacion, dui)
+                )
+                con.commit()
+                st.success(f"✅ Ahorro registrado exitosamente para {miembro_seleccionado}.")
+                st.info(f"Monto: ${monto_actual:.2f}, Saldo: ${saldo_actual:.2f}")
 
     except Exception as e:
-        st.error(f"❌ Error al conectar a la base de datos o error general: {e}")
-
+        st.error(f"❌ Error al registrar el ahorro: {e}")
     finally:
-        # Cierre seguro de recursos
+        # Cerrar conexión
         if 'cursor' in locals() and cursor:
             cursor.close()
         if 'con' in locals() and con:
@@ -98,7 +62,7 @@ def mostrar_lista_ahorros():
         # Consulta para obtener todos los ahorros con información del miembro
         cursor.execute("""
             SELECT a.ID_Ahorro, a.Monto_actual, a.Saldo_actual, a.Fecha_actualizacion, a.Dui,
-                   m.Nombre, m.Apellido
+                    m.Nombre, m.Apellido
             FROM AHORROS a
             LEFT JOIN Miembro m ON a.Dui = m.Dui
             ORDER BY a.Fecha_actualizacion DESC, a.ID_Ahorro DESC
@@ -150,9 +114,10 @@ def mostrar_lista_ahorros():
     except Exception as e:
         st.error(f"❌ Error al cargar la lista de ahorros: {e}")
     finally:
-        if 'cursor' in locales() and cursor:
+        # CORRECCIÓN: locales() a locals()
+        if 'cursor' in locals() and cursor:
             cursor.close()
-        if 'con' in locales() and con:
+        if 'con' in locals() and con:
             con.close()
 
 # Función para buscar ahorros
@@ -190,7 +155,7 @@ def buscar_ahorros():
             # Construir consulta dinámica
             query = """
                 SELECT a.ID_Ahorro, a.Monto_actual, a.Saldo_actual, a.Fecha_actualizacion, a.Dui,
-                       m.Nombre, m.Apellido
+                        m.Nombre, m.Apellido
                 FROM AHORROS a
                 LEFT JOIN Miembro m ON a.Dui = m.Dui
                 WHERE 1=1
@@ -303,15 +268,17 @@ def resumen_ahorros():
         if 'con' in locals() and con:
             con.close()
 
-# Función principal que combina todas las vistas
-def gestionar_ahorros():
+# Función principal que combina todas las vistas (renombrada de 'gestionar_ahorros' a 'mostrar_ahorro'
+# para que coincida con la importación en app.py)
+def mostrar_ahorro():
     """
-    Función principal para gestionar ahorros
+    Función principal para gestionar ahorros.
+    Organiza la vista de gestión de ahorros en pestañas.
     """
     tab1, tab2, tab3, tab4 = st.tabs(["💰 Registrar Ahorro", "📋 Ver Ahorros", "🔍 Buscar Ahorros", "📊 Resumen"])
     
     with tab1:
-        mostrar_ahorro()
+        registrar_ahorro()
     
     with tab2:
         mostrar_lista_ahorros()
@@ -320,4 +287,4 @@ def gestionar_ahorros():
         buscar_ahorros()
     
     with tab4:
-        resumen_ahorros()
+        resumen_ahorros(
