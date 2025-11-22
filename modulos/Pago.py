@@ -1,7 +1,7 @@
 import streamlit as st
 from modulos.config.conexion import obtener_conexion
 
-def mostrar_pago():
+def Pago():
     st.header("💳 Registrar Pago")
 
     # Intentar obtener la conexión a la base de datos
