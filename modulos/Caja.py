@@ -1,7 +1,7 @@
 import streamlit as st
 from modulos.config.conexion import obtener_conexion
 
-def mostrar_caja():
+def Caja():
     st.header("💰 Registrar Movimiento de Caja")
 
     # Intentar obtener la conexión a la base de datos
