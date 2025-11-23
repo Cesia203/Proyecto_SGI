@@ -6,7 +6,7 @@ from modulos.miembro import mostrar_miembro
 from modulos.login import login
 from modulos.reunion import mostrar_reunion 
 from modulos.ahorro import mostrar_ahorro
-from modulos.prestamo import mostrar_prestamo
+from modulos.Prestamo import mostrar_Prestamo
 # Configuración básica de la página
 st.set_page_config(layout="centered", page_title="Gestión Cooperativa")
 
@@ -184,7 +184,7 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
                 st.subheader("Administración de Préstamos")
                 st.info("Panel de control para solicitudes, desembolsos y seguimiento de pagos de préstamos.")
                 st.warning("Implementación pendiente: Lógica de bases de datos para préstamos.")
-                mostrar_prestamo()
+                mostrar_Prestamo()
         if tabs[4]: # Multas
             with tabs[4]:
                 st.subheader("Registro y Seguimiento de Multas")
