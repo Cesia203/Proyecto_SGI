@@ -1,7 +1,7 @@
 import streamlit as st
 from modulos.config.conexion import obtener_conexion
 
-def Prestamo():
+def mostrar_Prestamo():
     st.header("💰 Registrar Préstamo")
 
     # Intentar obtener la conexión a la base de datos
