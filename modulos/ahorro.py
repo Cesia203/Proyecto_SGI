@@ -11,7 +11,6 @@ def mostrar_ahorro():
         with st.form("form_ahorro"):
 
             Monto_actual = st.number_input("Monto actual", min_value=0.00, step=0.01, format="%.2f")
-            Saldo_actual = st.number_input("Saldo actual", min_value=0.00, step=0.01, format="%.2f")
             Dui = st.text_input("DUI del miembro")
 
             enviar = st.form_submit_button("✅ Guardar Ahorro")
@@ -21,16 +20,15 @@ def mostrar_ahorro():
                     st.warning("⚠️ Debes ingresar el DUI del miembro.")
                 else:
                     try:
-                        dui_val = int(Dui)  # Validar DUI como entero
+                        dui_val = int(Dui)  # Validación del DUI
 
                         sql_query = """
-                            INSERT INTO AHORROS (Monto_actual, Saldo_actual, Dui)
-                            VALUES (%s, %s, %s)
+                            INSERT INTO AHORROS (Monto_actual, Dui)
+                            VALUES (%s, %s)
                         """
 
                         values = (
                             float(Monto_actual),
-                            float(Saldo_actual),
                             dui_val
                         )
 
