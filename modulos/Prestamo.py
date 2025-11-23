@@ -1,7 +1,7 @@
 import streamlit as st
 from modulos.config.conexion import obtener_conexion
 
-def registrar_prestamo():
+def mostrar_Prestamo():
     st.header("💰 Registrar Préstamo (Simple)")
 
     try:
