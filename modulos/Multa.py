@@ -1,7 +1,7 @@
 import streamlit as st
 from modulos.config.conexion import obtener_conexion
 
-def Multa():
+def mostrar_Multa():
     st.header("💰 Registrar Multa")
 
     # Intentar obtener la conexión a la base de datos
