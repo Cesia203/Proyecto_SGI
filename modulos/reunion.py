@@ -15,7 +15,7 @@ def mostrar_reunion():
             Fecha = st.date_input("Fecha de la reunión")
             Dia = st.text_input("Día")
             Distrito = st.text_input("Distrito")
-            Grupo = st.text_input("Grupo")
+            ID_Grupo = st.text_input("ID_Grupo")
             ID_Asistencia = st.text_input("ID de Asistencia")
             Tipo = st.text_input("Tipo de reunión")
 
@@ -23,7 +23,7 @@ def mostrar_reunion():
 
             if enviar:
                 # Validación básica
-                if str(Dia).strip() == "" or str(Distrito).strip() == "" or str(Grupo).strip() == "":
+                if str(Dia).strip() == "" or str(Distrito).strip() == "" or str(ID_Grupo).strip() == "":
                     st.warning("⚠️ Debes completar al menos Día, Distrito y Grupo.")
                 else:
                     try:
@@ -32,7 +32,7 @@ def mostrar_reunion():
 
                         # Consulta SQL
                         sql_query = """
-                            INSERT INTO REUNION (Fecha, Dia, Distrito, Grupo, ID_Asistencia, Tipo)
+                            INSERT INTO REUNION (Fecha, Dia, Distrito, ID_Grupo, ID_Asistencia, Tipo)
                             VALUES (%s, %s, %s, %s, %s, %s)
                         """
 
@@ -40,7 +40,7 @@ def mostrar_reunion():
                             str(Fecha),     
                             str(Dia),
                             str(Distrito),
-                            str(Grupo),
+                            str(ID_Grupo),
                             id_asistencia_val,
                             str(Tipo)
                         )
