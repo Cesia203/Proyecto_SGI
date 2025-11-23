@@ -47,4 +47,3 @@ def mostrar_reunion():
             cursor.close()
         if 'con' in locals():
             con.close()
-pdz-hudk-dcm
