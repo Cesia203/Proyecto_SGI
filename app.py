@@ -8,6 +8,7 @@ from modulos.reunion import mostrar_reunion
 from modulos.ahorro import mostrar_ahorro
 from modulos.Prestamo import mostrar_Prestamo
 from modulos.Multa import mostrar_Multa
+from modulos.Pago import mostrar_Pago
 # Configuración básica de la página
 st.set_page_config(layout="centered", page_title="Gestión Cooperativa")
 
@@ -197,7 +198,7 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
                 st.subheader("Historial y Transacciones de Pagos")
                 st.info("Registro de todos los pagos realizados por los miembros.")
                 st.warning("Implementación pendiente: Lógica de bases de datos para pagos.")
-        
+                mostrar_Pago()
     elif seleccion == "Inicio":
         st.title(f"{todas_las_opciones['Inicio']} Inicio del Sistema")
         st.markdown(f"<p class='text-lg'>Rol de acceso: <b>{user_role}</b></p>", unsafe_allow_html=True)
