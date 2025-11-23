@@ -2,7 +2,7 @@ import streamlit as st
 from modulos.config.conexion import obtener_conexion
 from datetime import date
 
-def reunion():
+def mostrar_reunion():
     st.header("📅 Registrar Reunión")
 
     # Intentar obtener la conexión a la base de datos
