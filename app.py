@@ -7,6 +7,7 @@ from modulos.login import login
 from modulos.reunion import mostrar_reunion 
 from modulos.ahorro import mostrar_ahorro
 from modulos.Prestamo import mostrar_Prestamo
+from modulos.Multa import mostrar_Multa
 # Configuración básica de la página
 st.set_page_config(layout="centered", page_title="Gestión Cooperativa")
 
@@ -190,7 +191,7 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
                 st.subheader("Registro y Seguimiento de Multas")
                 st.info("Módulo para imponer, registrar y hacer seguimiento a las multas aplicadas.")
                 st.warning("Implementación pendiente: Lógica de bases de datos para multas.")
-
+                mostrar_Multa()
         if tabs[5]: # Pagos
             with tabs[5]:
                 st.subheader("Historial y Transacciones de Pagos")
