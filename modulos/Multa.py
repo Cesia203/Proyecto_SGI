@@ -26,7 +26,7 @@ def mostrar_Multa():
                     try:
                         cursor.execute(
                             """
-                            INSERT INTO Multa (Tipo, Monto, Descripccion, Fecha, Estado, Dui)
+                            INSERT INTO MULTA (Tipo, Monto, Descripccion, Fecha, Estado, Dui)
                             VALUES (%s, %s, %s, %s, %s, %s)
                             """,
                             (tipo, monto, descripcion, fecha, estado, dui)
