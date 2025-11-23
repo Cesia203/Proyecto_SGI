@@ -3,7 +3,7 @@ import datetime
 # Mantener la importación de la conexión a la base de datos
 from modulos.config.conexion import obtener_conexion
 
-def ahorro():
+def mostrar_ahorro():
     """
     Muestra el formulario para registrar un nuevo depósito de ahorro
     y gestiona la inserción de datos en la tabla 'Ahorro'.
