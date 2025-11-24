@@ -10,7 +10,8 @@ from modulos.Prestamo import mostrar_Prestamo
 from modulos.Multa import mostrar_Multa
 from modulos.Pago import mostrar_Pago
 from modulos.Promotora import mostrar_Promotora
-from modulos.Administrador import mostrar_Administrador   # 🔥 NUEVO
+from modulos.Administrador import mostrar_Administrador
+from modulos.REPORTE import mostrar_REPORTE   # ← NUEVO MÓDULO
 
 # Configuración básica de la página
 st.set_page_config(layout="centered", page_title="Gestión Cooperativa")
@@ -83,17 +84,18 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
         "Inicio": "🏠",
         "Directiva": "📈",
         "Promotora": "👤",
-        "Administrador": "⚙️"
+        "Administrador": "⚙️",
+        "Reporte": "📊"   # ← NUEVA OPCIÓN
     }
 
     # Opciones por rol
     opciones = ["Inicio"]
     if user_role == "Presidente":
-        opciones += ["Directiva", "Administrador"]
+        opciones += ["Directiva", "Administrador", "Reporte"]
     elif user_role == "Admin":
-        opciones += ["Administrador"]
+        opciones += ["Administrador", "Reporte"]
     elif user_role == "Promotora":
-        opciones += ["Promotora"]
+        opciones += ["Promotora"]   # Si la promotora también debe ver reportes, dímelo y lo agrego.
 
     # Convertimos a formato con iconos
     opciones_display = [f"{todas_las_opciones[o]} {o}" for o in opciones]
@@ -141,7 +143,12 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
     elif seleccion == "Administrador":
         st.title("⚙️ Panel del Administrador")
         st.markdown(f"Rol: **{user_role}**")
-        mostrar_Administrador()   # 🔥 AQUI SE ACTIVA EL MÓDULO REAL
+        mostrar_Administrador()
+
+    elif seleccion == "Reporte":     # ← NUEVO
+        st.title("📊 Reportes del Sistema")
+        st.markdown(f"Rol: **{user_role}**")
+        mostrar_Reporte()
 
     elif seleccion == "Directiva":
         st.title("📈 Sección Directiva")
