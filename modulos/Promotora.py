@@ -1,113 +1,106 @@
+import streamlit as st
 import pandas as pd
-from modulos.reportes_db import (
-    get_promotoras_list,
-    get_grupo_info_by_promotora_id,
-    get_ahorros_reporte,
-    get_prestamos_reporte,
-    get_multas_reporte
-)
+from config.conexion import obtener_conexion
+import plotly.express as px
 
-def generar_reporte_ahorros(ID_Grupo):
-    """Muestra el reporte de ahorros en Streamlit."""
-    ahorros, total = get_ahorros_reporte(ID_Grupo)
-    
-    if ahorros:
-        st.subheader("📊 Reporte de Ahorros")
-        
-        # Crear DataFrame para mejor visualización
-        df = pd.DataFrame(
-            ahorros,
-            columns=["Nombre", "Apellido", "Monto Actual"]
-        )
-        
-        # Formato de moneda
-        df["Monto Actual"] = df["Monto Actual"].apply(lambda x: f"${x:,.2f}")
-        
-        st.dataframe(df, use_container_width=True)
-        st.success(f"💰 **TOTAL Ahorrado por el Grupo:** **${total:,.2f}**")
-    else:
-        st.info("No hay registros de ahorros para este grupo.")
+def Promotora():
+    st.title("👩‍💼 Módulo Promotora – Reportes por Grupo")
 
-def generar_reporte_prestamos(ID_Grupo):
-    """Muestra el reporte de préstamos en Streamlit."""
-    prestamos, total_saldo = get_prestamos_reporte(ID_Grupo)
-    
-    if prestamos:
-        st.subheader("💸 Reporte de Préstamos")
-        
-        # Crear DataFrame
-        df = pd.DataFrame(
-            Prestamos,
-            columns=["Nombre", "Apellido", "Monto Inicial", "Intereses (%)", "Saldo Restante"]
-        )
+    try:
+        conn = obtener_conexion()
 
-        # Formato de moneda y porcentaje
-        df["Monto Inicial"] = df["Monto Inicial"].apply(lambda x: f"${x:,.2f}")
-        df["Saldo Restante"] = df["Saldo Restante"].apply(lambda x: f"${x:,.2f}")
-        df["Intereses (%)"] = df["Intereses (%)"].apply(lambda x: f"{x:,.2f}%")
-        
-        st.dataframe(df, use_container_width=True)
-        st.warning(f"🏦 **TOTAL Saldo Restante del Grupo:** **${total_saldo:,.2f}**")
-    else:
-        st.info("No hay préstamos activos registrados para este grupo.")
+        # Obtener lista de grupos
+        df_grupos = pd.read_sql("SELECT DISTINCT ID_Grupo FROM PROMOTORA", conn)
+        lista_grupos = df_grupos["ID_Grupo"].tolist()
 
-def generar_reporte_multas(ID_Grupo):
-    """Muestra el reporte de multas en Streamlit."""
-    multas, total_pendientes = get_multas_reporte(ID_Grupo)
-    
-    if Multas:
-        st.subheader("🚨 Reporte de Multas Pendientes")
-        
-        # Crear DataFrame
-        df = pd.DataFrame(
-            multas,
-            columns=["Nombre", "Apellido", "Tipo", "Monto", "Estado", "Fecha"]
-        )
+        st.sidebar.header("📌 Filtro por Grupo")
+        id_grupo = st.sidebar.selectbox("Selecciona un grupo:", lista_grupos)
 
-        # Formato de moneda
-        df["Monto"] = df["Monto"].apply(lambda x: f"${x:,.2f}")
-        
-        st.dataframe(df, use_container_width=True)
-        st.error(f"❌ **TOTAL Multas Pendientes del Grupo:** **${total_pendientes:,.2f}**")
-    else:
-        st.info("No hay multas pendientes registradas para este grupo.")
+        if not id_grupo:
+            st.warning("Seleccione un grupo para continuar.")
+            return
 
-def gestionar_promotora():
-    st.title("👩‍💼 Módulo de Promotoría y Reportes")
-    st.markdown("---")
+        # ----------------------------
+        # REPORTE DE AHORROS
+        # ----------------------------
+        st.subheader("💰 Reporte de Ahorros")
+        query_ahorros = f"""
+            SELECT 
+                A.ID_Ahorro,
+                A.Monto_actual,
+                A.Fecha_Actualizacion,
+                M.Nombre,
+                M.Apellido,
+                M.Dui
+            FROM AHORROS A
+            INNER JOIN Miembro M ON A.Dui = M.Dui
+            INNER JOIN PROMOTORA P ON M.ID_Grupo = P.ID_Grupo
+            WHERE P.ID_Grupo = {id_grupo};
+        """
+        df_ahorros = pd.read_sql(query_ahorros, conn)
+        st.dataframe(df_ahorros)
 
-    promotoras = get_promotoras_list()
-    
-    if not promotoras:
-        st.warning("No hay promotoras registradas en la base de datos.")
-        return
+        if not df_ahorros.empty:
+            fig = px.bar(df_ahorros, x="Nombre", y="Monto_actual",
+                         title="Ahorros por Miembro")
+            st.plotly_chart(fig, use_container_width=True)
 
-    # Mapeo de promotoras para el selectbox
-    promotora_options = {f"{p[1]} {p[2]} (ID: {p[0]})": p[0] for p in promotoras}
-    
-    # 1. Selector de Promotora
-    promotora_seleccionada_key = st.selectbox(
-        "Seleccione la Promotora a Consultar",
-        ["Seleccione Promotora"] + list(promotora_options.keys())
-    )
-    
-    if promotora_seleccionada_key != "Seleccione Promotora":
-        promotora_id = promotora_options[promotora_seleccionada_key]
-        
-        # 2. Obtener información del grupo asignado
-        grupo_info = get_grupo_info_by_promotora_id(promotora_id)
-        
-        if grupo_info:
-            id_grupo, nombre_grupo = grupo_info
-            
-            st.info(f"Asignación: Esta promotora gestiona el grupo **{nombre_grupo}** (ID: {ID_Grupo}).")
-            st.markdown("---")
-            
-            # 3. Pestañas para los Reportes
-            tab_ahorros, tab_prestamos, tab_multas = st.tabs(["💰 Ahorros", "💸 Préstamos", "🚨 Multas"])
-            
-            with tab_ahorros:
-                generar_reporte_ahorros(ID_Grupo)
-            
-            with tab_prestamos:
-                generar_repo
+        # ----------------------------
+        # REPORTE DE MULTAS
+        # ----------------------------
+        st.subheader("⚠️ Reporte de Multas")
+        query_multas = f"""
+            SELECT 
+                Mu.ID_Multa,
+                Mu.Tipo,
+                Mu.Monto,
+                Mu.Fecha,
+                Mu.Estado,
+                M.Nombre,
+                M.Apellido,
+                M.Dui
+            FROM MULTA Mu
+            INNER JOIN Miembro M ON Mu.Dui = M.Dui
+            INNER JOIN PROMOTORA P ON M.ID_Grupo = P.ID_Grupo
+            WHERE P.ID_Grupo = {id_grupo};
+        """
+        df_multas = pd.read_sql(query_multas, conn)
+        st.dataframe(df_multas)
+
+        # ----------------------------
+        # REPORTE DE PRÉSTAMOS
+        # ----------------------------
+        st.subheader("📄 Reporte de Préstamos")
+        query_prestamos = f"""
+            SELECT 
+                Pr.ID_Prestamo,
+                Pr.Monto,
+                Pr.Intereses,
+                Pr.Plazo_Meses,
+                Pr.Total_cuotas,
+                Pr.Saldo_restante,
+                M.Nombre,
+                M.Apellido,
+                M.Dui
+            FROM PRESTAMO Pr
+            INNER JOIN Miembro M ON Pr.Dui = M.Dui
+            INNER JOIN PROMOTORA P ON M.ID_Grupo = P.ID_Grupo
+            WHERE P.ID_Grupo = {id_grupo};
+        """
+        df_prestamos = pd.read_sql(query_prestamos, conn)
+        st.dataframe(df_prestamos)
+
+        if not df_prestamos.empty:
+            fig2 = px.bar(df_prestamos, x="Nombre", y="Monto",
+                          title="Préstamos por Miembro")
+            st.plotly_chart(fig2, use_container_width=True)
+
+    except Exception as e:
+        st.error(f"❌ Error: {e}")
+
+    finally:
+        conn.close()
+
+    if st.button("⬅ Volver al menú principal"):
+        st.session_state.module = None
+        st.rerun()
