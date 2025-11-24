@@ -179,7 +179,7 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
             mostrar_Pago()
 
         with tabs[6]:
-            mostrar_Reporte()      # ← SE ACTIVA AQUÍ
+            mostrar_reporte()      # ← SE ACTIVA AQUÍ
 
     # =============================
     # Cerrar sesión
