@@ -12,7 +12,8 @@ from modulos.Pago import mostrar_Pago
 from modulos.Promotora import mostrar_Promotora
 from modulos.Administrador import mostrar_Administrador
 from modulos.reporte import mostrar_reporte
-from modulos.caja import mostrar_caja          # ← NUEVO MÓDULO AGREGADO
+from modulos.caja import mostrar_caja
+from modulos.acta import mostrar_acta        # ← NUEVO MÓDULO AGREGADO
 
 # Configuración básica de la página
 st.set_page_config(layout="centered", page_title="Gestión Cooperativa")
@@ -157,7 +158,8 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
             "Multas",
             "Pagos",
             "Reporte",
-            "Caja"              # ← NUEVA PESTAÑA AGREGADA AQUÍ
+            "Caja",
+            "Acta"               # ← NUEVA PESTAÑA AGREGADA AQUÍ
         ]
 
         tabs = st.tabs(sub_opciones)
@@ -184,7 +186,10 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
             mostrar_reporte()
 
         with tabs[7]:
-            mostrar_caja()       # ← SE ACTIVA EL NUEVO MÓDULO
+            mostrar_caja()
+
+        with tabs[8]:
+            mostrar_acta()      # ← SE ACTIVA EL NUEVO MÓDULO
 
     # =============================
     # Cerrar sesión
