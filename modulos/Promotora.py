@@ -9,9 +9,9 @@ def mostrar_Promotora():
     try:
         conn = obtener_conexion()
 
-        # Obtener lista de grupos
-        df_grupos = pd.read_sql("SELECT DISTINCT ID_Grupo FROM PROMOTORA", conn)
-        lista_grupos = df_grupos["ID_Grupo"].tolist()
+        # Obtener lista de grupos correctamente
+        df_grupos = pd.read_sql("SELECT DISTINCT Grupo FROM Miembro ORDER BY Grupo", conn)
+        lista_grupos = df_grupos["Grupo"].tolist()
 
         st.sidebar.header("📌 Filtro por Grupo")
         id_grupo = st.sidebar.selectbox("Selecciona un grupo:", lista_grupos)
@@ -26,17 +26,15 @@ def mostrar_Promotora():
         st.subheader("💰 Reporte de Ahorros")
         query_ahorros = f"""
             SELECT 
-    A.ID_Ahorro,
-    A.Monto_actual,
-    A.Fecha_Actualizacion,
-    M.Nombre,
-    M.Apellido,
-    M.Dui
-FROM AHORROS A
-INNER JOIN Miembro M ON A.Dui = M.Dui
-INNER JOIN PROMOTORA P ON M.Grupo = P.ID_Grupo
-WHERE P.ID_Grupo = {id_grupo};
-
+                A.ID_Ahorro,
+                A.Monto_actual,
+                A.Fecha_Actualizacion,
+                M.Nombre,
+                M.Apellido,
+                M.Dui
+            FROM AHORROS A
+            INNER JOIN Miembro M ON A.Dui = M.Dui
+            WHERE M.Grupo = {id_grupo};
         """
         df_ahorros = pd.read_sql(query_ahorros, conn)
         st.dataframe(df_ahorros)
@@ -51,19 +49,18 @@ WHERE P.ID_Grupo = {id_grupo};
         # ----------------------------
         st.subheader("⚠️ Reporte de Multas")
         query_multas = f"""
-           SELECT 
-    Mu.ID_Multa,
-    Mu.Tipo,
-    Mu.Monto,
-    Mu.Fecha,
-    Mu.Estado,
-    M.Nombre,
-    M.Apellido,
-    M.Dui
-FROM MULTA Mu
-INNER JOIN Miembro M ON Mu.Dui = M.Dui
-INNER JOIN PROMOTORA P ON M.Grupo = P.ID_Grupo
-WHERE P.ID_Grupo = {id_grupo};
+            SELECT 
+                Mu.ID_Multa,
+                Mu.Tipo,
+                Mu.Monto,
+                Mu.Fecha,
+                Mu.Estado,
+                M.Nombre,
+                M.Apellido,
+                M.Dui
+            FROM MULTA Mu
+            INNER JOIN Miembro M ON Mu.Dui = M.Dui
+            WHERE M.Grupo = {id_grupo};
         """
         df_multas = pd.read_sql(query_multas, conn)
         st.dataframe(df_multas)
@@ -73,20 +70,19 @@ WHERE P.ID_Grupo = {id_grupo};
         # ----------------------------
         st.subheader("📄 Reporte de Préstamos")
         query_prestamos = f"""
-           SELECT 
-    Pr.ID_Prestamo,
-    Pr.Monto,
-    Pr.Intereses,
-    Pr.Plazo_Meses,
-    Pr.Total_cuotas,
-    Pr.Saldo_restante,
-    M.Nombre,
-    M.Apellido,
-    M.Dui
-FROM PRESTAMO Pr
-INNER JOIN Miembro M ON Pr.Dui = M.Dui
-INNER JOIN PROMOTORA P ON M.Grupo = P.ID_Grupo
-WHERE P.ID_Grupo = {id_grupo};
+            SELECT 
+                Pr.ID_Prestamo,
+                Pr.Monto,
+                Pr.Intereses,
+                Pr.Plazo_Meses,
+                Pr.Total_cuotas,
+                Pr.Saldo_restante,
+                M.Nombre,
+                M.Apellido,
+                M.Dui
+            FROM PRESTAMO Pr
+            INNER JOIN Miembro M ON Pr.Dui = M.Dui
+            WHERE M.Grupo = {id_grupo};
         """
         df_prestamos = pd.read_sql(query_prestamos, conn)
         st.dataframe(df_prestamos)
