@@ -1,2 +1,4 @@
+plotly
+pandas
 streamlit
 mysql-connector-python
