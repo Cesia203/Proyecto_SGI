@@ -2,7 +2,7 @@ import streamlit as st
 from datetime import date
 from modulos.config.conexion import obtener_conexion
 
-def registrar_acta():
+def mostrar_acta():
     st.header("📄 Registrar Acta")
 
     try:
