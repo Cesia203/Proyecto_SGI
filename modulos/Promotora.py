@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from config.conexion import obtener_conexion
+from modulos.config.conexion import obtener_conexion
 import plotly.express as px
 
 def mostrar_Promotora():
