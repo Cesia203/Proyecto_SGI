@@ -11,8 +11,8 @@ from modulos.Multa import mostrar_Multa
 from modulos.Pago import mostrar_Pago
 from modulos.Promotora import mostrar_Promotora
 from modulos.Administrador import mostrar_Administrador
-from modulos.reporte import mostrar_reporte      # ← NUEVO
-
+from modulos.reporte import mostrar_reporte      
+from modulos.caja import mostrar_caja  
 # Configuración básica de la página
 st.set_page_config(layout="centered", page_title="Gestión Cooperativa")
 
@@ -145,41 +145,45 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
         mostrar_Administrador()
 
     elif seleccion == "Directiva":
-        st.title("📈 Sección Directiva")
-        st.markdown(f"Rol: **{user_role}**")
+    st.title("📈 Sección Directiva")
+    st.markdown(f"Rol: **{user_role}**")
 
-        sub_opciones = [
-            "Registrar miembro",
-            "Asistencia a reuniones",
-            "Ahorros",
-            "Préstamos",
-            "Multas",
-            "Pagos",
-            "Reporte"     # ← NUEVA PESTAÑA
-        ]
+    sub_opciones = [
+        "Registrar miembro",
+        "Asistencia a reuniones",
+        "Ahorros",
+        "Préstamos",
+        "Multas",
+        "Pagos",
+        "Caja",       # ← NUEVO
+        "Reporte"
+    ]
 
-        tabs = st.tabs(sub_opciones)
+    tabs = st.tabs(sub_opciones)
 
-        with tabs[0]:
-            mostrar_miembro()
+    with tabs[0]:
+        mostrar_miembro()
 
-        with tabs[1]:
-            mostrar_reunion()
+    with tabs[1]:
+        mostrar_reunion()
 
-        with tabs[2]:
-            mostrar_ahorro()
+    with tabs[2]:
+        mostrar_ahorro()
 
-        with tabs[3]:
-            mostrar_Prestamo()
+    with tabs[3]:
+        mostrar_Prestamo()
 
-        with tabs[4]:
-            mostrar_Multa()
+    with tabs[4]:
+        mostrar_Multa()
 
-        with tabs[5]:
-            mostrar_Pago()
+    with tabs[5]:
+        mostrar_Pago()
 
-        with tabs[6]:
-            mostrar_reporte()      # ← SE ACTIVA AQUÍ
+    with tabs[6]:
+        mostrar_Caja()      # ← NUEVO
+
+    with tabs[7]:
+        mostrar_reporte()
 
     # =============================
     # Cerrar sesión
