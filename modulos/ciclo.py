@@ -56,7 +56,6 @@ def mostrar_ciclo():
             WHERE M.Grupo = %s
         """
         df_ahorros = pd.read_sql_query(sql_ahorros, con, params=[grupo_sel])
-
         df_ahorros = df_ahorros.merge(df_miembros, on="Dui", how="right")
         df_ahorros["Monto_actual"] = df_ahorros["Monto_actual"].fillna(0)
 
@@ -101,7 +100,7 @@ def mostrar_ciclo():
         st.write(f"👥 Total de miembros: **{total_miembros}**")
         st.write(f"💰 Total ahorrado del grupo: **${total_ahorros_grupo:,.2f}**")
         st.write(f"🔔 Total obtenido por multas: **${total_multas:,.2f}**")
-        st.write(f"🏦 Total obtenido por intereses de préstamos: **${total_intereses:,.2f}**")
+        st.write(f"🏦 Total obtenido por intereses: **${total_intereses:,.2f}**")
 
         st.subheader(f"🔹 Total absoluto del ciclo: **${total_absoluto:,.2f}**")
         st.subheader(f"🔹 Total correspondiente a cada miembro: **${total_por_miembro:,.2f}**")
@@ -116,12 +115,18 @@ def mostrar_ciclo():
 
         with st.form("form_saldo_ciclo"):
 
-            st.write("Ingrese manualmente el ID del ciclo nuevo:")
+            # ID del ciclo
             id_ciclo = st.number_input(
                 "ID del nuevo ciclo",
                 min_value=1,
                 step=1,
                 key="id_ciclo"
+            )
+
+            # Grupo manual
+            grupo_manual = st.text_input(
+                "Ingrese manualmente el grupo al que se guardará el saldo (texto):",
+                value=grupo_sel
             )
 
             st.write("Ingrese el saldo inicial del siguiente ciclo para cada miembro:")
@@ -147,13 +152,13 @@ def mostrar_ciclo():
 
                     for dui, saldo_ini in saldos.items():
                         sql_insert = """
-                            INSERT INTO SALDO_CICLO (ID_Ciclo, Dui, Saldo_Inicial, Fecha_Registro)
-                            VALUES (%s, %s, %s, %s)
+                            INSERT INTO SALDO_CICLO (ID_Ciclo, Dui, Grupo, Saldo_Inicial, Fecha_Registro)
+                            VALUES (%s, %s, %s, %s, %s)
                         """
 
                         cursor.execute(
                             sql_insert,
-                            (id_ciclo, dui, saldo_ini, date.today())
+                            (id_ciclo, dui, grupo_manual, saldo_ini, date.today())
                         )
 
                     con.commit()
