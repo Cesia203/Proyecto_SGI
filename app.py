@@ -11,7 +11,7 @@ from modulos.Multa import mostrar_Multa
 from modulos.Pago import mostrar_Pago
 from modulos.Promotora import mostrar_Promotora
 from modulos.Administrador import mostrar_Administrador
-from modulos.REPORTE import mostrar_REPORTE   # ← NUEVO MÓDULO
+from modulos.reporte import mostrar_reporte   # ← NUEVO MÓDULO
 
 # Configuración básica de la página
 st.set_page_config(layout="centered", page_title="Gestión Cooperativa")
