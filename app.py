@@ -184,7 +184,7 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
             mostrar_reporte()
 
         with tabs[7]:
-            mostrar_Caja()       # ← SE ACTIVA EL NUEVO MÓDULO
+            mostrar_caja()       # ← SE ACTIVA EL NUEVO MÓDULO
 
     # =============================
     # Cerrar sesión
