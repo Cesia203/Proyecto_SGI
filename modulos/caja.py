@@ -43,7 +43,7 @@ def mostrar_caja():
         df_multas = pd.read_sql_query(sql_multas, con, params=[grupo_sel])
         total_multas = df_multas["Monto"].sum() if not df_multas.empty else 0
 
-        # 2) Ahorros (solo aumentos del monto actual)
+        # 2) Ahorros
         sql_ahorros = """
             SELECT A.Monto_actual
             FROM AHORROS A
@@ -56,26 +56,20 @@ def mostrar_caja():
         total_ahorros_negativos = 0
 
         if not df_ahorros.empty:
-            # Asumimos que monto_actual es el saldo actual.
-            # No hay tabla de movimientos, así que no podemos separar depósitos/retiros históricos.
-            # Interpretación:
-            # - Si sube → depósito (entra)
-            # - Si baja → retiro (sale)
             difs = df_ahorros["Monto_actual"].diff().fillna(0)
-
             total_ahorros_positivos = difs[difs > 0].sum()
             total_ahorros_negativos = abs(difs[difs < 0].sum())
 
-        # 3) Pagos de préstamo
+        # 3) Pagos de préstamo  ✔ COLUMNA CORREGIDA
         sql_pago_prestamo = """
-            SELECT Pa.Monto_pago
+            SELECT Pa.Monto
             FROM PAGO Pa
             INNER JOIN PRESTAMO Pr ON Pa.ID_Prestamo = Pr.ID_Prestamo
             INNER JOIN Miembro Mi ON Pr.Dui = Mi.Dui
             WHERE Mi.Grupo = %s
         """
         df_pagos = pd.read_sql_query(sql_pago_prestamo, con, params=[grupo_sel])
-        total_pagos_prestamo = df_pagos["Monto_pago"].sum() if not df_pagos.empty else 0
+        total_pagos_prestamo = df_pagos["Monto"].sum() if not df_pagos.empty else 0
 
         # TOTAL ENTRA
         total_entra = total_multas + total_ahorros_positivos + total_pagos_prestamo
@@ -84,10 +78,10 @@ def mostrar_caja():
         # DINERO QUE SALE
         # --------------------------------------------------
 
-        # 1) Retiros de ahorro (cuando el monto baja)
+        # 1) Retiros de ahorro
         total_retiros = total_ahorros_negativos
 
-        # 2) Desembolsos (Monto del préstamo)
+        # 2) Desembolsos de préstamos
         sql_prestamos = """
             SELECT Pr.Monto
             FROM PRESTAMO Pr
