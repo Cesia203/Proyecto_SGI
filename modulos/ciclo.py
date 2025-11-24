@@ -2,7 +2,7 @@ import streamlit as st
 from datetime import date
 from modulos.config.conexion import obtener_conexion
 
-def registrar_ciclo():
+def mostrar_ciclo():
     st.header("🔄 Registrar Ciclo")
 
     try:
