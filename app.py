@@ -9,6 +9,7 @@ from modulos.ahorro import mostrar_ahorro
 from modulos.Prestamo import mostrar_Prestamo
 from modulos.Multa import mostrar_Multa
 from modulos.Pago import mostrar_Pago
+from modulos.Promotora import mostrar_Promotora
 # Configuración básica de la página
 st.set_page_config(layout="centered", page_title="Gestión Cooperativa")
 
@@ -208,7 +209,7 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
         st.title(f"{todas_las_opciones['Promotora']} Sección Promotora")
         st.markdown(f"<p class='text-lg'>Rol de acceso: <b>{user_role}</b></p>", unsafe_allow_html=True)
         st.info("Aquí irían las herramientas para la gestión de clientes, seguimiento de prospectos y campañas de la promotora.")
-        
+        mostrar_Promotora()
     elif seleccion == "Administrador":
         st.title(f"{todas_las_opciones['Administrador']} Sección Administrador")
         st.markdown(f"<p class='text-lg'>Rol de acceso: <b>{user_role}</b></p>", unsafe_allow_html=True)
