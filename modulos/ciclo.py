@@ -77,7 +77,6 @@ def mostrar_ciclo():
         # ==================================================
         # INTERESES PAGADOS DE PRÉSTAMOS
         # ==================================================
-        # ——— Se toma solo los intereses, NO el capital ———
         sql_intereses = """
             SELECT Pa.Monto
             FROM PAGO Pa
@@ -111,11 +110,19 @@ def mostrar_ciclo():
         st.markdown("## 📝 Asignar saldo inicial para el siguiente ciclo")
 
         # ==================================================
-        # FORMULARIO PARA INGRESAR EL SALDO EN EL SIGUIENTE CICLO
+        # FORMULARIO PARA EL SIGUIENTE CICLO
         # ==================================================
         saldos = {}
 
         with st.form("form_saldo_ciclo"):
+
+            st.write("Ingrese manualmente el ID del ciclo nuevo:")
+            id_ciclo = st.number_input(
+                "ID del nuevo ciclo",
+                min_value=1,
+                step=1,
+                key="id_ciclo"
+            )
 
             st.write("Ingrese el saldo inicial del siguiente ciclo para cada miembro:")
 
@@ -140,11 +147,14 @@ def mostrar_ciclo():
 
                     for dui, saldo_ini in saldos.items():
                         sql_insert = """
-                            INSERT INTO SALDO_CICLO (Dui, Grupo, Saldo_Inicial, Fecha_Registro)
+                            INSERT INTO SALDO_CICLO (ID_Ciclo, Dui, Saldo_Inicial, Fecha_Registro)
                             VALUES (%s, %s, %s, %s)
                         """
 
-                        cursor.execute(sql_insert, (dui, grupo_sel, saldo_ini, date.today()))
+                        cursor.execute(
+                            sql_insert,
+                            (id_ciclo, dui, saldo_ini, date.today())
+                        )
 
                     con.commit()
                     st.success("✅ Saldos del siguiente ciclo registrados correctamente.")
