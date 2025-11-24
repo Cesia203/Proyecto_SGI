@@ -11,7 +11,7 @@ def mostrar_reporte():
         with st.form("form_reporte"):
 
             tipo = st.text_input("Tipo de reporte")
-            descripcion = st.text_area("Descripccion")
+            Descripccion = st.text_area("Descripccion")
             id_ciclo = st.number_input("ID del Ciclo", min_value=1, step=1)
             id_admin = st.number_input("ID del Administrador", min_value=1, step=1)
 
@@ -20,7 +20,7 @@ def mostrar_reporte():
             if enviar:
                 if tipo.strip() == "":
                     st.warning("⚠️ Debes ingresar el tipo de reporte.")
-                elif descripcion.strip() == "":
+                elif Descripccion.strip() == "":
                     st.warning("⚠️ Debes ingresar una descripción.")
                 else:
                     try:
@@ -31,7 +31,7 @@ def mostrar_reporte():
 
                         values = (
                             tipo,
-                            descripccion,
+                            Descripccion,
                             int(id_ciclo),
                             int(id_admin)
                         )
