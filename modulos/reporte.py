@@ -25,7 +25,7 @@ def mostrar_reporte():
                 else:
                     try:
                         sql_query = """
-                            INSERT INTO REPORTES (Tipo, Descripcion, ID_Ciclo, ID_Admin)
+                            INSERT INTO REPORTE (Tipo, Descripcion, ID_Ciclo, ID_Admin)
                             VALUES (%s, %s, %s, %s)
                         """
 
