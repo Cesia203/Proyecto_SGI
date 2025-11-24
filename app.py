@@ -11,7 +11,7 @@ from modulos.Multa import mostrar_Multa
 from modulos.Pago import mostrar_Pago
 from modulos.Promotora import mostrar_Promotora
 from modulos.Administrador import mostrar_Administrador
-from modulos.reporte import mostrar_reporte   # ← NUEVO MÓDULO
+from modulos.Reporte import mostrar_Reporte      # ← NUEVO
 
 # Configuración básica de la página
 st.set_page_config(layout="centered", page_title="Gestión Cooperativa")
@@ -84,18 +84,17 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
         "Inicio": "🏠",
         "Directiva": "📈",
         "Promotora": "👤",
-        "Administrador": "⚙️",
-        "Reporte": "📊"   # ← NUEVA OPCIÓN
+        "Administrador": "⚙️"
     }
 
     # Opciones por rol
     opciones = ["Inicio"]
     if user_role == "Presidente":
-        opciones += ["Directiva", "Administrador", "Reporte"]
+        opciones += ["Directiva", "Administrador"]
     elif user_role == "Admin":
-        opciones += ["Administrador", "Reporte"]
+        opciones += ["Administrador"]
     elif user_role == "Promotora":
-        opciones += ["Promotora"]   # Si la promotora también debe ver reportes, dímelo y lo agrego.
+        opciones += ["Promotora"]
 
     # Convertimos a formato con iconos
     opciones_display = [f"{todas_las_opciones[o]} {o}" for o in opciones]
@@ -145,11 +144,6 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
         st.markdown(f"Rol: **{user_role}**")
         mostrar_Administrador()
 
-    elif seleccion == "Reporte":     # ← NUEVO
-        st.title("📊 Reportes del Sistema")
-        st.markdown(f"Rol: **{user_role}**")
-        mostrar_Reporte()
-
     elif seleccion == "Directiva":
         st.title("📈 Sección Directiva")
         st.markdown(f"Rol: **{user_role}**")
@@ -160,7 +154,8 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
             "Ahorros",
             "Préstamos",
             "Multas",
-            "Pagos"
+            "Pagos",
+            "Reporte"     # ← NUEVA PESTAÑA
         ]
 
         tabs = st.tabs(sub_opciones)
@@ -182,6 +177,9 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
 
         with tabs[5]:
             mostrar_Pago()
+
+        with tabs[6]:
+            mostrar_Reporte()      # ← SE ACTIVA AQUÍ
 
     # =============================
     # Cerrar sesión
