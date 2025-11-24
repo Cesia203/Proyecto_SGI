@@ -11,7 +11,7 @@ def mostrar_reporte():
         with st.form("form_reporte"):
 
             tipo = st.text_input("Tipo de reporte")
-            descripcion = st.text_area("Descripción")
+            descripcion = st.text_area("Descripccion")
             id_ciclo = st.number_input("ID del Ciclo", min_value=1, step=1)
             id_admin = st.number_input("ID del Administrador", min_value=1, step=1)
 
@@ -25,13 +25,13 @@ def mostrar_reporte():
                 else:
                     try:
                         sql_query = """
-                            INSERT INTO REPORTE (Tipo, Descripcion, ID_Ciclo, ID_Admin)
+                            INSERT INTO REPORTE (Tipo, Descripccion, ID_Ciclo, ID_Admin)
                             VALUES (%s, %s, %s, %s)
                         """
 
                         values = (
                             tipo,
-                            descripcion,
+                            descripccion,
                             int(id_ciclo),
                             int(id_admin)
                         )
