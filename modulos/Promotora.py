@@ -3,7 +3,7 @@ import pandas as pd
 from config.conexion import obtener_conexion
 import plotly.express as px
 
-def Promotora():
+def mostrar_Promotora():
     st.title("👩‍💼 Módulo Promotora – Reportes por Grupo")
 
     try:
