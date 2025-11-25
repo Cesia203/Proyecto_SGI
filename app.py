@@ -15,6 +15,7 @@ from modulos.reporte import mostrar_reporte
 from modulos.caja import mostrar_caja
 from modulos.acta import mostrar_acta
 from modulos.ciclo import mostrar_ciclo
+from modulos.asistencia import mostrar_asistencia   # ← NUEVO IMPORT
 
 # Configuración básica
 st.set_page_config(layout="centered", page_title="Gestión Cooperativa")
@@ -139,7 +140,7 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
             sub_opciones = ["Caja", "Ahorros", "Ciclo", "Préstamos"]
 
         elif user_role == "Secretaria":
-            sub_opciones = ["Multas", "Registrar miembro"]
+            sub_opciones = ["Multas", "Registrar miembro", "Asistencia"]  # ← AGREGADO
 
         tabs = st.tabs(sub_opciones)
 
@@ -161,6 +162,7 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
         if user_role == "Secretaria":
             with tabs[0]: mostrar_Multa()
             with tabs[1]: mostrar_miembro()
+            with tabs[2]: mostrar_asistencia()   # ← NUEVA PESTAÑA
 
     # =============================
     # CERRAR SESIÓN
