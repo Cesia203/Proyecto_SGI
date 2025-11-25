@@ -135,35 +135,31 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
         # -------------------------------
         if user_role == "Presidente":
             sub_opciones = ["Reuniones", "Acta", "Ciclo", "Caja"]
-
         elif user_role == "Tesorera":
-            sub_opciones = ["Caja", "Ahorros", "Ciclo", "Préstamos"]
-
+            sub_opciones = ["Caja", "Ahorros", "Ciclo", "Préstamos", "Pago"]  # ← se agregó "Pago"
         elif user_role == "Secretaria":
-            sub_opciones = ["Multas", "Registrar miembro", "Asistencia"]  # ← AGREGADO
+            sub_opciones = ["Multas", "Registrar miembro", "Asistencia"]
 
         tabs = st.tabs(sub_opciones)
 
-        # PRESIDENTE
-        if user_role == "Presidente":
-            with tabs[0]: mostrar_reunion()
-            with tabs[1]: mostrar_acta()
-            with tabs[2]: mostrar_ciclo()
-            with tabs[3]: mostrar_caja()
+        # Diccionario seguro para asociar pestañas con funciones
+        funciones_tabs = {
+            "Reuniones": mostrar_reunion,
+            "Acta": mostrar_acta,
+            "Ciclo": mostrar_ciclo,
+            "Caja": mostrar_caja,
+            "Ahorros": mostrar_ahorro,
+            "Préstamos": mostrar_Prestamo,
+            "Pago": mostrar_Pago,
+            "Multas": mostrar_Multa,
+            "Registrar miembro": mostrar_miembro,
+            "Asistencia": mostrar_asistencia
+        }
 
-        # TESORERA
-        if user_role == "Tesorera":
-            with tabs[0]: mostrar_caja()
-            with tabs[1]: mostrar_ahorro()
-            with tabs[2]: mostrar_ciclo()
-            with tabs[3]: mostrar_Prestamo()
-            with tabs[4]: mostrar_Pago()
-
-        # SECRETARIA
-        if user_role == "Secretaria":
-            with tabs[0]: mostrar_Multa()
-            with tabs[1]: mostrar_miembro()
-            with tabs[2]: mostrar_asistencia()   # ← NUEVA PESTAÑA
+        # Ejecutar la función correcta según la pestaña
+        for i, tab_name in enumerate(sub_opciones):
+            with tabs[i]:
+                funciones_tabs[tab_name]()
 
     # =============================
     # CERRAR SESIÓN
