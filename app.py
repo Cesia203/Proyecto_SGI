@@ -157,6 +157,7 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
             with tabs[1]: mostrar_ahorro()
             with tabs[2]: mostrar_ciclo()
             with tabs[3]: mostrar_Prestamo()
+            with tabs[4]: mostrar_Pago()
 
         # SECRETARIA
         if user_role == "Secretaria":
