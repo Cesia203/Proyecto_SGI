@@ -16,10 +16,10 @@ from modulos.caja import mostrar_caja
 from modulos.acta import mostrar_acta
 from modulos.ciclo import mostrar_ciclo
 
-# Configuración básica de la página
+# Configuración básica
 st.set_page_config(layout="centered", page_title="Gestión Cooperativa")
 
-# --- CSS para estilo de botones ---
+# CSS
 st.markdown("""
 <style>
 div.stRadio > p {
@@ -48,26 +48,17 @@ div.stRadio > label[data-testid*="stDecoration"] {
     border-color: #0077b6;
     color: #0077b6;
 }
-div.stRadio input[type="radio"] {
-    display: none;
-}
-div.stRadio > div {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-}
+div.stRadio input[type="radio"] { display: none; }
+div.stRadio > div { flex-direction: row; flex-wrap: wrap; justify-content: center; }
 </style>
 """, unsafe_allow_html=True)
 
 
-# =============================
-# VALIDACIÓN DE SESIÓN
-# =============================
+# =======================
+# SESIÓN
+# =======================
 if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]:
 
-    # =============================
-    # ROLES REALES (SIMULACIÓN)
-    # =============================
     roles_principales = ["Directiva", "Administrador", "Promotor"]
 
     st.session_state["rol_principal"] = st.sidebar.selectbox(
@@ -75,7 +66,7 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
         roles_principales
     )
 
-    # SUB-ROLES SOLO CUANDO ES DIRECTIVA
+    # SUB-ROLES DE DIRECTIVA
     if st.session_state["rol_principal"] == "Directiva":
         st.session_state["rol_directiva"] = st.sidebar.selectbox(
             "Cargo dentro de Directiva:",
@@ -83,11 +74,10 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
         )
         user_role = st.session_state["rol_directiva"]
     else:
-        # Para Admin o Promotor no hay subroles
         user_role = st.session_state["rol_principal"]
 
     # =============================
-    # MENÚ SUPERIOR (dependiendo del rol)
+    # MENÚ SUPERIOR
     # =============================
     opciones = ["Inicio"]
 
@@ -121,7 +111,7 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
     st.markdown("---")
 
     # =============================
-    # CONTENIDO SEGÚN SECCIÓN
+    # CONTENIDOS
     # =============================
     if seleccion == "Inicio":
         st.title("🏠 Inicio del Sistema")
@@ -130,61 +120,47 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
 
     elif seleccion == "Promotor":
         st.title("👤 Panel del Promotor")
-        st.markdown(f"Rol: **Promotor**")
         mostrar_Promotora()
 
     elif seleccion == "Administrador":
         st.title("⚙️ Panel del Administrador")
-        st.markdown(f"Rol: **Administrador**")
         mostrar_Administrador()
 
     elif seleccion == "Directiva":
         st.title(f"📈 Directiva – Rol: {user_role}")
 
-        sub_opciones = [
-            "Registrar miembro",
-            "Asistencia a reuniones",
-            "Ahorros",
-            "Préstamos",
-            "Multas",
-            "Pagos",
-            "Reporte",
-            "Caja",
-            "Acta",
-            "Ciclo"
-        ]
+        # -------------------------------
+        # OPCIONES DEPENDIENTES DEL CARGO
+        # -------------------------------
+        if user_role == "Presidente":
+            sub_opciones = ["Reuniones", "Acta", "Ciclo", "Caja"]
+
+        elif user_role == "Tesorera":
+            sub_opciones = ["Caja", "Ahorros", "Ciclo", "Préstamos"]
+
+        elif user_role == "Secretaria":
+            sub_opciones = ["Multas", "Registrar miembro"]
 
         tabs = st.tabs(sub_opciones)
 
-        with tabs[0]:
-            mostrar_miembro()
+        # PRESIDENTE
+        if user_role == "Presidente":
+            with tabs[0]: mostrar_reunion()
+            with tabs[1]: mostrar_acta()
+            with tabs[2]: mostrar_ciclo()
+            with tabs[3]: mostrar_caja()
 
-        with tabs[1]:
-            mostrar_reunion()
+        # TESORERA
+        if user_role == "Tesorera":
+            with tabs[0]: mostrar_caja()
+            with tabs[1]: mostrar_ahorro()
+            with tabs[2]: mostrar_ciclo()
+            with tabs[3]: mostrar_Prestamo()
 
-        with tabs[2]:
-            mostrar_ahorro()
-
-        with tabs[3]:
-            mostrar_Prestamo()
-
-        with tabs[4]:
-            mostrar_Multa()
-
-        with tabs[5]:
-            mostrar_Pago()
-
-        with tabs[6]:
-            mostrar_reporte()
-
-        with tabs[7]:
-            mostrar_caja()
-
-        with tabs[8]:
-            mostrar_acta()
-
-        with tabs[9]:
-            mostrar_ciclo()
+        # SECRETARIA
+        if user_role == "Secretaria":
+            with tabs[0]: mostrar_Multa()
+            with tabs[1]: mostrar_miembro()
 
     # =============================
     # CERRAR SESIÓN
