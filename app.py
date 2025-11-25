@@ -4,7 +4,7 @@ import streamlit as st
 from modulos.bienvenido import mostrar_bienvenido
 from modulos.miembro import mostrar_miembro
 from modulos.login import login
-from modulos.reunion import mostrar_reunion 
+from modulos.reunion import mostrar_reunion
 from modulos.ahorro import mostrar_ahorro
 from modulos.Prestamo import mostrar_Prestamo
 from modulos.Multa import mostrar_Multa
@@ -14,7 +14,7 @@ from modulos.Administrador import mostrar_Administrador
 from modulos.reporte import mostrar_reporte
 from modulos.caja import mostrar_caja
 from modulos.acta import mostrar_acta
-from modulos.ciclo import mostrar_ciclo     # ← NUEVO MÓDULO AGREGADO
+from modulos.ciclo import mostrar_ciclo
 
 # Configuración básica de la página
 st.set_page_config(layout="centered", page_title="Gestión Cooperativa")
@@ -59,97 +59,87 @@ div.stRadio > div {
 </style>
 """, unsafe_allow_html=True)
 
+
 # =============================
-#  VALIDACIÓN DE SESIÓN
+# VALIDACIÓN DE SESIÓN
 # =============================
 if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]:
 
     # =============================
-    # SIMULACIÓN DE ROLES (DEMO)
+    # ROLES REALES (SIMULACIÓN)
     # =============================
-    roles_db = ["Presidente", "Admin", "Promotora"]
-    if "user_role" not in st.session_state:
-        st.session_state["user_role"] = "Presidente"
+    roles_principales = ["Directiva", "Administrador", "Promotor"]
 
-    st.session_state["user_role"] = st.sidebar.selectbox(
-        "Simular Rol (DEMO):",
-        roles_db,
-        index=roles_db.index(st.session_state["user_role"]),
-        key="role_selector"
+    st.session_state["rol_principal"] = st.sidebar.selectbox(
+        "Seleccionar rol principal:",
+        roles_principales
     )
 
-    # =============================
-    # MENÚ PRINCIPAL POR ROL
-    # =============================
-    user_role = st.session_state["user_role"]
+    # SUB-ROLES SOLO CUANDO ES DIRECTIVA
+    if st.session_state["rol_principal"] == "Directiva":
+        st.session_state["rol_directiva"] = st.sidebar.selectbox(
+            "Cargo dentro de Directiva:",
+            ["Presidente", "Tesorera", "Secretaria"]
+        )
+        user_role = st.session_state["rol_directiva"]
+    else:
+        # Para Admin o Promotor no hay subroles
+        user_role = st.session_state["rol_principal"]
 
-    todas_las_opciones = {
+    # =============================
+    # MENÚ SUPERIOR (dependiendo del rol)
+    # =============================
+    opciones = ["Inicio"]
+
+    if st.session_state["rol_principal"] == "Directiva":
+        opciones.append("Directiva")
+
+    if st.session_state["rol_principal"] == "Administrador":
+        opciones.append("Administrador")
+
+    if st.session_state["rol_principal"] == "Promotor":
+        opciones.append("Promotor")
+
+    iconos = {
         "Inicio": "🏠",
         "Directiva": "📈",
-        "Promotora": "👤",
-        "Administrador": "⚙️"
+        "Administrador": "⚙️",
+        "Promotor": "👤"
     }
 
-    # Opciones por rol
-    opciones = ["Inicio"]
-    if user_role == "Presidente":
-        opciones += ["Directiva", "Administrador"]
-    elif user_role == "Admin":
-        opciones += ["Administrador"]
-    elif user_role == "Promotora":
-        opciones += ["Promotora"]
+    opciones_display = [f"{iconos[o]} {o}" for o in opciones]
 
-    # Convertimos a formato con iconos
-    opciones_display = [f"{todas_las_opciones[o]} {o}" for o in opciones]
-
-    # Mantener selección previa
-    seleccion_actual = st.session_state.get("last_selection", "Inicio")
-
-    try:
-        index_default = opciones.index(seleccion_actual)
-    except:
-        index_default = 0
-        st.session_state["last_selection"] = "Inicio"
-
-    # =============================
-    # RADIO — Menú superior centrado
-    # =============================
     col1, col2, col3 = st.columns([1, 4, 1])
     with col2:
         seleccion_display = st.radio(
             "OPCIONES",
             opciones_display,
-            index=index_default,
-            key="main_menu_selection",
             horizontal=True
         )
-
-        seleccion = seleccion_display.rsplit(" ", 1)[-1]
-        st.session_state["last_selection"] = seleccion
+        seleccion = seleccion_display.split(" ", 1)[1]
 
     st.markdown("---")
 
     # =============================
-    #  ACCIONES POR SECCIÓN
+    # CONTENIDO SEGÚN SECCIÓN
     # =============================
     if seleccion == "Inicio":
         st.title("🏠 Inicio del Sistema")
         st.markdown(f"Rol: **{user_role}**")
         mostrar_bienvenido()
 
-    elif seleccion == "Promotora":
-        st.title("👤 Sección Promotora")
-        st.markdown(f"Rol: **{user_role}**")
+    elif seleccion == "Promotor":
+        st.title("👤 Panel del Promotor")
+        st.markdown(f"Rol: **Promotor**")
         mostrar_Promotora()
 
     elif seleccion == "Administrador":
         st.title("⚙️ Panel del Administrador")
-        st.markdown(f"Rol: **{user_role}**")
+        st.markdown(f"Rol: **Administrador**")
         mostrar_Administrador()
 
     elif seleccion == "Directiva":
-        st.title("📈 Sección Directiva")
-        st.markdown(f"Rol: **{user_role}**")
+        st.title(f"📈 Directiva – Rol: {user_role}")
 
         sub_opciones = [
             "Registrar miembro",
@@ -161,7 +151,7 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
             "Reporte",
             "Caja",
             "Acta",
-            "Ciclo"      # ← NUEVA PESTAÑA AGREGADA 
+            "Ciclo"
         ]
 
         tabs = st.tabs(sub_opciones)
@@ -194,10 +184,10 @@ if "sesion_iniciada" in st.session_state and st.session_state["sesion_iniciada"]
             mostrar_acta()
 
         with tabs[9]:
-            mostrar_ciclo()   # ← NUEVO MÓDULO ACTIVADO
+            mostrar_ciclo()
 
     # =============================
-    # Cerrar sesión
+    # CERRAR SESIÓN
     # =============================
     st.sidebar.markdown("---")
     if st.sidebar.button("Cerrar Sesión", type="primary"):
