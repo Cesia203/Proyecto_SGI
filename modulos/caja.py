@@ -21,7 +21,6 @@ def mostrar_caja():
             return
 
         lista_grupos = df_grupos["Grupo"].tolist()
-
         grupo_sel = st.selectbox("Selecciona un grupo", ["-- Seleccionar --"] + lista_grupos)
 
         if grupo_sel == "-- Seleccionar --":
@@ -51,16 +50,12 @@ def mostrar_caja():
             WHERE Mi.Grupo = %s
         """
         df_ahorros = pd.read_sql_query(sql_ahorros, con, params=[grupo_sel])
-
         total_ahorros_positivos = 0
-        total_ahorros_negativos = 0
-
         if not df_ahorros.empty:
             difs = df_ahorros["Monto_actual"].diff().fillna(0)
             total_ahorros_positivos = difs[difs > 0].sum()
-            total_ahorros_negativos = abs(difs[difs < 0].sum())
 
-        # 3) Pagos de préstamo  ✔ COLUMNA CORREGIDA
+        # 3) Pagos de préstamo
         sql_pago_prestamo = """
             SELECT Pa.Monto
             FROM PAGO Pa
@@ -78,10 +73,7 @@ def mostrar_caja():
         # DINERO QUE SALE
         # --------------------------------------------------
 
-        # 1) Retiros de ahorro
-        total_retiros = total_ahorros_negativos
-
-        # 2) Desembolsos de préstamos
+        # Solo considerar desembolsos de préstamos
         sql_prestamos = """
             SELECT Pr.Monto
             FROM PRESTAMO Pr
@@ -92,7 +84,7 @@ def mostrar_caja():
         total_desembolsos = df_prestamos["Monto"].sum() if not df_prestamos.empty else 0
 
         # TOTAL SALE
-        total_sale = total_retiros + total_desembolsos
+        total_sale = total_desembolsos
 
         # --------------------------------------------------
         # SALDO FINAL
@@ -111,7 +103,6 @@ def mostrar_caja():
         st.markdown("---")
 
         st.markdown("## 💸 Dinero que sale")
-        st.write(f"✔ Retiros de ahorro: **${total_retiros:,.2f}**")
         st.write(f"✔ Desembolsos de préstamo: **${total_desembolsos:,.2f}**")
         st.subheader(f"🟥 Total dinero que sale: **${total_sale:,.2f}**")
 
